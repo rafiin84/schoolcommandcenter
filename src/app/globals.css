@@ -1,0 +1,256 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  /* Semantic status roles (fixed across themes, never reused as chart series) */
+  --color-status-good: var(--status-good);
+  --color-status-good-foreground: var(--status-good-foreground);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-foreground: var(--status-warning-foreground);
+  --color-status-serious: var(--status-serious);
+  --color-status-serious-foreground: var(--status-serious-foreground);
+  --color-status-critical: var(--status-critical);
+  --color-status-critical-foreground: var(--status-critical-foreground);
+  --color-status-info: var(--status-info);
+  --color-status-info-foreground: var(--status-info-foreground);
+
+  /* Brand accent (progress / positive momentum) */
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-foreground: var(--brand-primary-foreground);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-foreground: var(--brand-accent-foreground);
+
+  /* Surface elevation beyond card (page plane vs raised surface) */
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-raised: var(--surface-raised);
+}
+
+:root {
+  color-scheme: light;
+
+  /* Page plane + primary ink */
+  --background: #f9f9f7;
+  --foreground: #0b0b0b;
+
+  /* Elevated card / popover surface */
+  --card: #fcfcfb;
+  --card-foreground: #0b0b0b;
+  --popover: #fcfcfb;
+  --popover-foreground: #0b0b0b;
+
+  --surface-sunken: #f1f0eb;
+  --surface-raised: #ffffff;
+
+  /* Brand: deep government-trust navy */
+  --primary: #1e3a6e;
+  --primary-foreground: #ffffff;
+  --brand-primary: #1e3a6e;
+  --brand-primary-foreground: #ffffff;
+
+  /* Brand accent: restrained teal, used for progress/positive momentum */
+  --brand-accent: #1baf7a;
+  --brand-accent-foreground: #ffffff;
+
+  --secondary: #f1f0ec;
+  --secondary-foreground: #1a1a19;
+
+  --muted: #f4f3ef;
+  --muted-foreground: #6b6a63;
+
+  --accent: #ebf1fb;
+  --accent-foreground: #142a52;
+
+  --destructive: #d03b3b;
+  --destructive-foreground: #ffffff;
+
+  --border: #e4e2dc;
+  --input: #e4e2dc;
+  --ring: #1e3a6e;
+
+  /* Categorical chart palette (validated: worst adjacent CVD ΔE 9.1, normal-vision ΔE 19.6) */
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+
+  /* Status palette — fixed across themes, ships with icon + label, never color alone */
+  --status-good: #0ca30c;
+  --status-good-foreground: #ffffff;
+  --status-warning: #fab219;
+  --status-warning-foreground: #1a1a19;
+  --status-serious: #ec835a;
+  --status-serious-foreground: #1a1a19;
+  --status-critical: #d03b3b;
+  --status-critical-foreground: #ffffff;
+  --status-info: #2a78d6;
+  --status-info-foreground: #ffffff;
+
+  --radius: 0.75rem;
+
+  --sidebar: #fcfcfb;
+  --sidebar-foreground: #0b0b0b;
+  --sidebar-primary: #1e3a6e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ebf1fb;
+  --sidebar-accent-foreground: #142a52;
+  --sidebar-border: #e4e2dc;
+  --sidebar-ring: #1e3a6e;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #0d0d0d;
+  --foreground: #ffffff;
+
+  --card: #1a1a19;
+  --card-foreground: #ffffff;
+  --popover: #1a1a19;
+  --popover-foreground: #ffffff;
+
+  --surface-sunken: #131312;
+  --surface-raised: #202020;
+
+  --primary: #6e93d6;
+  --primary-foreground: #0b0b0b;
+  --brand-primary: #6e93d6;
+  --brand-primary-foreground: #0b0b0b;
+
+  --brand-accent: #199e70;
+  --brand-accent-foreground: #ffffff;
+
+  --secondary: #242422;
+  --secondary-foreground: #ffffff;
+
+  --muted: #1f1f1d;
+  --muted-foreground: #a3a199;
+
+  --accent: #1b2436;
+  --accent-foreground: #dce7fb;
+
+  --destructive: #e66767;
+  --destructive-foreground: #1a1a19;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #6e93d6;
+
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+
+  --status-good: #0ca30c;
+  --status-good-foreground: #ffffff;
+  --status-warning: #fab219;
+  --status-warning-foreground: #1a1a19;
+  --status-serious: #ec835a;
+  --status-serious-foreground: #1a1a19;
+  --status-critical: #d03b3b;
+  --status-critical-foreground: #ffffff;
+  --status-info: #3987e5;
+  --status-info-foreground: #0b0b0b;
+
+  --sidebar: #141413;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #6e93d6;
+  --sidebar-primary-foreground: #0b0b0b;
+  --sidebar-accent: #1b2436;
+  --sidebar-accent-foreground: #dce7fb;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #6e93d6;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Typographic scale — see src/lib/constants/typography.ts for the matching TS tokens */
+@layer components {
+  .text-display {
+    @apply text-4xl sm:text-5xl font-semibold tracking-tight text-foreground;
+  }
+  .text-page-heading {
+    @apply text-2xl sm:text-3xl font-semibold tracking-tight text-foreground;
+  }
+  .text-section-heading {
+    @apply text-lg sm:text-xl font-semibold tracking-tight text-foreground;
+  }
+  .text-body {
+    @apply text-sm sm:text-base leading-relaxed text-foreground;
+  }
+  .text-caption {
+    @apply text-xs leading-normal text-muted-foreground;
+  }
+  .text-kpi {
+    @apply text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight text-foreground;
+  }
+  .text-data {
+    @apply text-sm tabular-nums text-foreground;
+  }
+  .text-badge {
+    @apply text-xs font-medium tracking-wide;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

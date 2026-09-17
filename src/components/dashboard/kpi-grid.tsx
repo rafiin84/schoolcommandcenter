@@ -1,0 +1,34 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { KpiCard, type KpiCardProps } from "./kpi-card";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06 },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+};
+
+export function KpiGrid({ cards }: { cards: KpiCardProps[] }) {
+  return (
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
+    >
+      {cards.map((card) => (
+        <motion.div key={card.label} variants={item}>
+          <KpiCard {...card} />
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
