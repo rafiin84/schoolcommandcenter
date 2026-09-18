@@ -1,3 +1,9 @@
+import {
+  STATEWIDE_TOTAL_SCHOOLS,
+  STATEWIDE_TOTAL_STUDENTS,
+  STATEWIDE_TOTAL_TEACHERS,
+  STATEWIDE_TOTAL_ZOHO_ACCOUNTS,
+} from "@/lib/constants";
 import { generateAiInsights } from "./ai-insight-factory";
 import { generateAlerts } from "./alert-factory";
 import { generateLeadershipDirectory } from "./contact-factory";
@@ -14,7 +20,7 @@ import { generateZohoAccounts } from "./zoho-factory";
 function buildDatabase() {
   const { districts, blocks, schools } = generateGeography();
   const hierarchyNodes = toHierarchyNodes(districts, blocks, schools);
-  const zohoAccounts = generateZohoAccounts(schools);
+  const zohoAccounts = generateZohoAccounts(schools).slice(0, STATEWIDE_TOTAL_ZOHO_ACCOUNTS);
   const contacts = generateLeadershipDirectory(districts, blocks, schools);
   const alerts = generateAlerts(districts, blocks, schools, contacts);
   const notifications = generateNotifications(alerts, districts);
@@ -39,7 +45,20 @@ function buildDatabase() {
     }
   }
 
-  const stateSnapshot = computeStateSnapshot(schools, totalOpenIssueCount);
+  const sampleStateSnapshot = computeStateSnapshot(schools, totalOpenIssueCount);
+  const stateSnapshot = {
+    ...sampleStateSnapshot,
+    totalSchools: STATEWIDE_TOTAL_SCHOOLS,
+    schoolsOnboarded: Math.round(
+      (sampleStateSnapshot.readinessRate / 100) * STATEWIDE_TOTAL_SCHOOLS,
+    ),
+    studentAccounts: STATEWIDE_TOTAL_STUDENTS,
+    teacherAccounts: STATEWIDE_TOTAL_TEACHERS,
+    activeAccounts: Math.round(
+      (STATEWIDE_TOTAL_STUDENTS + STATEWIDE_TOTAL_TEACHERS) *
+        (sampleStateSnapshot.engagementRate / 100),
+    ),
+  };
   const districtSnapshots = computeDistrictSnapshots(districts, schools, openIssueCountByDistrict);
   const aiInsights = generateAiInsights(stateSnapshot, districtSnapshots, districts);
 

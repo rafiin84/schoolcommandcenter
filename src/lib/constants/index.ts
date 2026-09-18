@@ -51,4 +51,14 @@ export const NOTIFICATION_TYPE_LABEL: Record<NotificationType, string> = {
 
 export const MOCK_LATENCY_MS = { min: 250, max: 650 } as const;
 
+/**
+ * Real-world Tamil Nadu statewide totals used to scale the Overview KPIs.
+ * The detailed per-school sample dataset (map/directory/alerts) stays at a
+ * manageable illustrative size — these totals are the headline denominators.
+ */
+export const STATEWIDE_TOTAL_SCHOOLS = 35_000;
+export const STATEWIDE_TOTAL_STUDENTS = 50_00_000;
+export const STATEWIDE_TOTAL_TEACHERS = 2_50_000;
+export const STATEWIDE_TOTAL_ZOHO_ACCOUNTS = 700;
+
 export const SIMULATE_ERROR_QUERY_KEY = "mockError";
