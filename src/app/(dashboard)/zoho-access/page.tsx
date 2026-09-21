@@ -49,11 +49,7 @@ export default function ZohoAccessPage() {
 
   return (
     <ContentContainer>
-      <div className="mb-4 flex items-center justify-end">
-        <AddZohoAccountDialog allAccounts={allAccounts} />
-      </div>
-
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mb-6 flex flex-wrap items-end gap-3">
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-foreground">District</label>
           <Select
@@ -63,7 +59,7 @@ export default function ZohoAccessPage() {
               setBlockId(ALL);
             }}
           >
-            <SelectTrigger className="h-14 w-full rounded-xl border-2 border-primary/25 bg-primary/5 px-4 text-base font-medium">
+            <SelectTrigger className="h-14 w-64 rounded-xl border-2 border-primary/25 bg-primary/5 px-4 text-base font-medium">
               <SelectValue placeholder="All districts" />
             </SelectTrigger>
             <SelectContent>
@@ -80,7 +76,7 @@ export default function ZohoAccessPage() {
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-foreground">Block</label>
           <Select value={blockId} onValueChange={(value) => setBlockId(value ?? ALL)}>
-            <SelectTrigger className="h-14 w-full rounded-xl border-2 border-brand-accent/25 bg-brand-accent/5 px-4 text-base font-medium">
+            <SelectTrigger className="h-14 w-64 rounded-xl border-2 border-brand-accent/25 bg-brand-accent/5 px-4 text-base font-medium">
               <SelectValue placeholder="All blocks" />
             </SelectTrigger>
             <SelectContent>
@@ -92,6 +88,10 @@ export default function ZohoAccessPage() {
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="ml-auto">
+          <AddZohoAccountDialog allAccounts={allAccounts} />
         </div>
       </div>
 
