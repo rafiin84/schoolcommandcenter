@@ -10,6 +10,7 @@ import { generateAnnouncements } from "./announcement-factory";
 import { generateLeadershipDirectory } from "./contact-factory";
 import { generateGeography, toHierarchyNodes } from "./geography-factory";
 import { computeDistrictSnapshots, computeStateSnapshot } from "./kpi-factory";
+import { generateModuleUsage } from "./module-usage-factory";
 import { generateNotifications } from "./notification-factory";
 import { generateZohoAccounts } from "./zoho-factory";
 
@@ -26,6 +27,7 @@ function buildDatabase() {
   const alerts = generateAlerts(districts, blocks, schools, contacts);
   const notifications = generateNotifications(alerts, districts);
   const announcements = generateAnnouncements(districts);
+  const moduleUsage = generateModuleUsage();
 
   const blockDistrictById = new Map(blocks.map((b) => [b.id, b.districtId]));
   const schoolDistrictById = new Map(schools.map((s) => [s.id, s.districtId]));
@@ -74,6 +76,7 @@ function buildDatabase() {
     alerts,
     notifications,
     announcements,
+    moduleUsage,
     stateSnapshot,
     districtSnapshots,
     aiInsights,

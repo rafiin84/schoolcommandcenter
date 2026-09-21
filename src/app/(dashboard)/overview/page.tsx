@@ -15,6 +15,7 @@ import { ContentContainer } from "@/components/layout/content-container";
 import { PageHeader } from "@/components/layout/page-header";
 import { SectionHeader } from "@/components/layout/section-header";
 import { KpiGrid } from "@/components/dashboard/kpi-grid";
+import { ModuleUsageGrid } from "@/components/dashboard/module-usage-grid";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { DistrictHealthGrid } from "@/components/dashboard/district-health-grid";
 import { AlertCard } from "@/components/alerts/alert-card";
@@ -29,6 +30,7 @@ import { useDistrictSummaries } from "@/hooks/use-map";
 import { useAlerts } from "@/hooks/use-alerts";
 import { useAiInsights } from "@/hooks/use-ai-insights";
 import { useNotifications } from "@/hooks/use-notifications";
+import { useModuleUsage } from "@/hooks/use-module-usage";
 import { formatCompactNumber, formatPercent } from "@/lib/formatters";
 
 export default function OverviewPage() {
@@ -38,6 +40,7 @@ export default function OverviewPage() {
   const alerts = useAlerts({ sortBy: "priority", status: ["open"] });
   const insights = useAiInsights();
   const notifications = useNotifications();
+  const moduleUsage = useModuleUsage();
 
   const snapshot = overview.data?.data.stateSnapshot;
 
@@ -127,6 +130,20 @@ export default function OverviewPage() {
               },
             ]}
           />
+        ) : null}
+      </section>
+
+      <section aria-labelledby="module-usage-heading" className="mb-8">
+        <SectionHeader
+          title="Zoho Classes module activity"
+          description="Statewide usage across Zoho Classes content modules."
+        />
+        {moduleUsage.isLoading ? (
+          <KpiGridSkeleton count={8} />
+        ) : moduleUsage.isError ? (
+          <ErrorState onRetry={() => moduleUsage.refetch()} />
+        ) : moduleUsage.data ? (
+          <ModuleUsageGrid stats={moduleUsage.data.data} />
         ) : null}
       </section>
 

@@ -9,3 +9,4 @@ export * from "./ai-insight";
 export * from "./announcement";
 export * from "./school-directory";
 export * from "./course-template";
+export * from "./module-usage";
