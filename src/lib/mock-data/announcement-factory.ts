@@ -47,8 +47,8 @@ export function generateAnnouncements(districts: DistrictSummary[]): Announcemen
         {
           id: "att-1",
           kind: "youtube",
-          url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-          name: "Phase 2 rollout briefing",
+          url: "https://www.youtube.com/watch?v=DC58z4N0IWw",
+          name: "Let's use video to reinvent education — Sal Khan (TED-Ed)",
         },
       ],
     },
@@ -58,6 +58,14 @@ export function generateAnnouncements(districts: DistrictSummary[]): Announcemen
       role: "Principal Secretary, School Education",
       daysAgo: 1,
       category: "introduction",
+      attachments: [
+        {
+          id: "att-ict",
+          kind: "image",
+          url: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/ICT_Classroom.JPG/960px-ICT_Classroom.JPG",
+          name: "ICT classroom",
+        },
+      ],
     },
     {
       title: `${sample(0).name} district crosses 90% onboarding`,
@@ -70,8 +78,8 @@ export function generateAnnouncements(districts: DistrictSummary[]): Announcemen
         {
           id: "att-2",
           kind: "image",
-          url: "https://picsum.photos/seed/scc-announce-1/800/450",
-          name: "Onboarding milestone celebration",
+          url: "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Tamil_Nadu_school_kids.jpg/960px-Tamil_Nadu_school_kids.jpg",
+          name: "Tamil Nadu school kids",
         },
       ],
     },
@@ -111,8 +119,8 @@ export function generateAnnouncements(districts: DistrictSummary[]): Announcemen
         {
           id: "att-4",
           kind: "image",
-          url: "https://picsum.photos/seed/scc-announce-2/800/450",
-          name: "Training session recap",
+          url: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/A_Classroom_in_a_Government_Primary_school_in_Kerala.jpg/960px-A_Classroom_in_a_Government_Primary_school_in_Kerala.jpg",
+          name: "Classroom training session",
         },
         { id: "att-5", kind: "document", url: "#", name: "Attendance-Summary.xlsx" },
       ],
