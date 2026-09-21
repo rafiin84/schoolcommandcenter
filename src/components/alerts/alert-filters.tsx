@@ -68,9 +68,9 @@ export function AlertFilters({
         </Select>
       </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">Priority</span>
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">Priority</span>
           {PRIORITY_OPTIONS.map((p) => (
             <button
               key={p}
@@ -88,11 +88,9 @@ export function AlertFilters({
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">Status</span>
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">Status</span>
           {STATUS_OPTIONS.map((s) => (
             <button
               key={s}
@@ -110,11 +108,9 @@ export function AlertFilters({
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">Category</span>
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">Category</span>
           {CATEGORY_OPTIONS.map((c) => (
             <button
               key={c}
@@ -137,7 +133,7 @@ export function AlertFilters({
           <Button
             variant="ghost"
             size="sm"
-            className="ml-auto self-start"
+            className="ml-auto"
             onClick={() => onChange({ search: "", priority: [], status: [], category: [], sortBy: value.sortBy })}
           >
             Clear filters

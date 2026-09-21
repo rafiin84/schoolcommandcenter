@@ -1,6 +1,5 @@
 import {
   AddressBook,
-  Bell,
   Gauge,
   Megaphone,
   MapTrifold,
@@ -16,6 +15,8 @@ export interface NavItem {
   icon: React.ComponentType<IconProps>;
 }
 
+// Notifications is intentionally left out — it's already reachable from the
+// bell icon in the top bar, so it doesn't need a second entry in this list.
 export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { href: "/overview", label: "Overview", icon: Gauge },
   { href: "/announcements", label: "Announcements", icon: Megaphone },
@@ -24,7 +25,6 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { href: "/zoho-access", label: "Zoho Classes Access", icon: SignIn },
   { href: "/course-template", label: "Course Template", icon: SquaresFour },
   { href: "/directory", label: "Directory", icon: AddressBook },
-  { href: "/notifications", label: "Notifications", icon: Bell },
 ];
 
 export const MOBILE_NAV_ITEMS: NavItem[] = PRIMARY_NAV_ITEMS.slice(0, 5);

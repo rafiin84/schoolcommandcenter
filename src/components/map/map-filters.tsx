@@ -46,9 +46,9 @@ export function MapFilters() {
         />
       </div>
 
-      <div className="flex flex-col gap-2 overflow-x-auto sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">Priority</span>
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">Priority</span>
           {PRIORITY_OPTIONS.map((priority) => (
             <button
               key={priority}
@@ -66,11 +66,9 @@ export function MapFilters() {
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">Onboarding</span>
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">Onboarding</span>
           {STATUS_OPTIONS.map((status) => (
             <button
               key={status}
@@ -88,11 +86,9 @@ export function MapFilters() {
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">Engagement</span>
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">Engagement</span>
           {ENGAGEMENT_PRESETS.map((preset) => (
             <button
               key={preset.label}
@@ -112,7 +108,7 @@ export function MapFilters() {
         </div>
 
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" className="ml-auto self-start" onClick={resetFilters}>
+          <Button variant="ghost" size="sm" className="ml-auto" onClick={resetFilters}>
             Clear filters
           </Button>
         )}
