@@ -22,10 +22,10 @@ export function KpiGrid({ cards }: { cards: KpiCardProps[] }) {
       variants={container}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
+      className="flex gap-3 overflow-x-auto pb-1 sm:gap-4"
     >
       {cards.map((card) => (
-        <motion.div key={card.label} variants={item}>
+        <motion.div key={card.label} variants={item} className="w-56 shrink-0 sm:w-64">
           <KpiCard {...card} />
         </motion.div>
       ))}

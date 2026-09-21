@@ -12,7 +12,6 @@ import {
   Warning,
 } from "@phosphor-icons/react/dist/ssr";
 import { ContentContainer } from "@/components/layout/content-container";
-import { PageHeader } from "@/components/layout/page-header";
 import { SectionHeader } from "@/components/layout/section-header";
 import { KpiGrid } from "@/components/dashboard/kpi-grid";
 import { ModuleUsageGrid } from "@/components/dashboard/module-usage-grid";
@@ -45,18 +44,13 @@ export default function OverviewPage() {
   const snapshot = overview.data?.data.stateSnapshot;
 
   return (
-    <ContentContainer>
-      <PageHeader
-        eyebrow="Tamil Nadu · Statewide"
-        title="Overview"
-        description="A one-minute read on Zoho Classes deployment, engagement, and operational health across Tamil Nadu."
-        actions={
-          <Button render={<Link href="/education-map" />} nativeButton={false} className="gap-2">
-            <MapTrifold size={16} />
-            Open Education Map
-          </Button>
-        }
-      />
+    <ContentContainer className="pt-3 sm:pt-4 lg:pt-4">
+      <div className="mb-4 flex items-center justify-end">
+        <Button render={<Link href="/education-map" />} nativeButton={false} className="gap-2">
+          <MapTrifold size={16} />
+          Open Education Map
+        </Button>
+      </div>
 
       <section aria-labelledby="kpi-heading" className="mb-8">
         <h2 id="kpi-heading" className="sr-only">

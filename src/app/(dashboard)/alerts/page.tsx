@@ -82,7 +82,7 @@ function AlertsContent() {
   }, [groupByGeography, data, allNodes.data]);
 
   return (
-    <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
+    <ContentContainer className="max-w-none px-3 pt-3 sm:px-4 sm:pt-4 lg:px-4 lg:pt-4">
       <div className="mb-4 flex items-center justify-end">
         <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
           <FunnelSimple size={15} />

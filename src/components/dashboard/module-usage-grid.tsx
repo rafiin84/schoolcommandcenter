@@ -25,14 +25,14 @@ const MODULE_STYLE: Record<string, { icon: React.ComponentType<IconProps>; tone:
 
 export function ModuleUsageGrid({ stats }: { stats: ModuleUsageStat[] }) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <div className="flex gap-3 overflow-x-auto pb-1 sm:gap-4">
       {stats.map((stat) => {
         const style = MODULE_STYLE[stat.id];
         const Icon = style?.icon ?? BookOpen;
         return (
           <div
             key={stat.id}
-            className={`flex flex-col gap-3 rounded-2xl p-5 shadow-sm ${style?.tone ?? "border border-border bg-card"}`}
+            className={`flex w-56 shrink-0 flex-col gap-3 rounded-2xl p-5 shadow-sm sm:w-64 ${style?.tone ?? "border border-border bg-card"}`}
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-medium text-muted-foreground">{stat.module}</span>

@@ -39,7 +39,7 @@ export default function CourseTemplatePage() {
   const totalRecords = query.data?.pages[0]?.totalRecords ?? 0;
 
   return (
-    <ContentContainer>
+    <ContentContainer className="pt-3 sm:pt-4 lg:pt-4">
       <div className="mb-4 flex items-center justify-end">
         <Button
           variant="outline"
