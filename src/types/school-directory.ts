@@ -24,4 +24,6 @@ export interface DirectorySchoolAccount {
   lastVerifiedAt: string;
   region: string;
   mockAccessState: MockAccessState;
+  /** Only set for accounts added manually via the "Add Zoho Classes Account" form. */
+  accessTokenLast4?: string;
 }

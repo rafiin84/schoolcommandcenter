@@ -3,11 +3,13 @@
 import { useMemo, useState } from "react";
 import { ContentContainer } from "@/components/layout/content-container";
 import { DirectoryAccountCard } from "@/components/zoho/directory-account-card";
+import { AddZohoAccountDialog } from "@/components/zoho/add-zoho-account-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
 import { useDirectorySchoolAccounts } from "@/hooks/use-school-directory";
+import { useZohoDirectoryStore } from "@/store/zoho-directory-store";
 
 const ALL = "__all__";
 
@@ -16,7 +18,8 @@ export default function ZohoAccessPage() {
   const [blockId, setBlockId] = useState(ALL);
 
   const accounts = useDirectorySchoolAccounts();
-  const allAccounts = accounts.data ?? [];
+  const draftAccounts = useZohoDirectoryStore((s) => s.draftAccounts);
+  const allAccounts = useMemo(() => [...draftAccounts, ...(accounts.data ?? [])], [draftAccounts, accounts.data]);
 
   const districts = useMemo(() => {
     const seen = new Map<string, string>();
@@ -46,6 +49,10 @@ export default function ZohoAccessPage() {
 
   return (
     <ContentContainer>
+      <div className="mb-4 flex items-center justify-end">
+        <AddZohoAccountDialog allAccounts={allAccounts} />
+      </div>
+
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-foreground">District</label>

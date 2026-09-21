@@ -81,6 +81,12 @@ export function DirectoryAccountCard({ account }: { account: DirectorySchoolAcco
           <dt className="text-muted-foreground">Last verified</dt>
           <dd className="text-data font-medium text-foreground">{formatDateTime(account.lastVerifiedAt)}</dd>
         </div>
+        {account.accessTokenLast4 && (
+          <div>
+            <dt className="text-muted-foreground">Access token</dt>
+            <dd className="text-data font-medium text-foreground">••••{account.accessTokenLast4}</dd>
+          </div>
+        )}
       </dl>
 
       <Button
