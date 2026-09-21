@@ -17,10 +17,10 @@ const STATUS_LABEL: Record<AlertException["status"], string> = {
 };
 
 const PRIORITY_ACCENT: Record<AlertException["priority"], string> = {
-  low: "border-l-border bg-card",
-  medium: "border-l-status-warning bg-status-warning/6",
-  high: "border-l-status-serious bg-status-serious/6",
-  critical: "border-l-status-critical bg-status-critical/6",
+  low: "bg-card",
+  medium: "bg-status-warning/6",
+  high: "bg-status-serious/6",
+  critical: "bg-status-critical/6",
 };
 
 export function AlertCard({
@@ -35,7 +35,7 @@ export function AlertCard({
       <Link
         href={`/alerts/${alert.id}`}
         className={cn(
-          "block rounded-2xl border-l-4 p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:p-5",
+          "block rounded-2xl p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:p-5",
           PRIORITY_ACCENT[alert.priority],
         )}
       >

@@ -20,9 +20,9 @@ const STATUS_CONFIG: Record<
   ZohoAccountStatus,
   { label: string; icon: typeof CheckCircle; className: string; accent: string }
 > = {
-  active: { label: "Active", icon: CheckCircle, className: "text-status-good", accent: "border-l-status-good bg-status-good/5" },
-  pending: { label: "Pending", icon: Clock, className: "text-status-warning", accent: "border-l-status-warning bg-status-warning/6" },
-  suspended: { label: "Suspended", icon: XCircle, className: "text-status-critical", accent: "border-l-status-critical bg-status-critical/6" },
+  active: { label: "Active", icon: CheckCircle, className: "text-status-good", accent: "bg-status-good/5" },
+  pending: { label: "Pending", icon: Clock, className: "text-status-warning", accent: "bg-status-warning/6" },
+  suspended: { label: "Suspended", icon: XCircle, className: "text-status-critical", accent: "bg-status-critical/6" },
 };
 
 export function DirectoryAccountCard({ account }: { account: DirectorySchoolAccount }) {
@@ -42,7 +42,7 @@ export function DirectoryAccountCard({ account }: { account: DirectorySchoolAcco
   }
 
   return (
-    <div className={cn("flex flex-col gap-4 rounded-2xl border-l-4 p-4 sm:p-5", status.accent)}>
+    <div className={cn("flex flex-col gap-4 rounded-2xl p-4 sm:p-5", status.accent)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-foreground">{account.schoolName}</p>

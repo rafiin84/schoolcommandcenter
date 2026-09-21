@@ -25,9 +25,9 @@ export const ANNOUNCEMENT_CATEGORY_BADGE_CLASS: Record<AnnouncementCategory, str
 };
 
 export const ANNOUNCEMENT_CATEGORY_CARD_ACCENT: Record<AnnouncementCategory, string> = {
-  milestone: "border-l-status-good bg-status-good/5",
-  update: "border-l-status-info bg-status-info/5",
-  insight: "border-l-brand-accent bg-brand-accent/5",
-  guidance: "border-l-status-warning bg-status-warning/6",
-  introduction: "border-l-primary bg-primary/5",
+  milestone: "bg-status-good/5",
+  update: "bg-status-info/5",
+  insight: "bg-brand-accent/5",
+  guidance: "bg-status-warning/6",
+  introduction: "bg-primary/5",
 };

@@ -24,10 +24,10 @@ const INSIGHT_ICON: Record<InsightType, React.ComponentType<IconProps>> = {
 };
 
 const INSIGHT_ACCENT: Record<InsightType, { card: string; icon: string }> = {
-  deployment_gap: { card: "border-l-chart-1", icon: "bg-chart-1/10 text-chart-1" },
-  engagement_pattern: { card: "border-l-chart-5", icon: "bg-chart-5/10 text-chart-5" },
-  operational_risk: { card: "border-l-status-critical", icon: "bg-status-critical/10 text-status-critical" },
-  positive_trend: { card: "border-l-status-good", icon: "bg-status-good/10 text-status-good" },
+  deployment_gap: { card: "bg-chart-1/5", icon: "bg-chart-1/10 text-chart-1" },
+  engagement_pattern: { card: "bg-chart-5/5", icon: "bg-chart-5/10 text-chart-5" },
+  operational_risk: { card: "bg-status-critical/5", icon: "bg-status-critical/10 text-status-critical" },
+  positive_trend: { card: "bg-status-good/5", icon: "bg-status-good/10 text-status-good" },
 };
 
 export function AiInsightCard({
@@ -43,7 +43,7 @@ export function AiInsightCard({
   const accent = INSIGHT_ACCENT[insight.insightType];
 
   return (
-    <div className={`rounded-2xl border border-l-4 border-border bg-card p-4 sm:p-5 ${accent.card}`}>
+    <div className={`rounded-2xl p-4 sm:p-5 ${accent.card}`}>
       <div className="flex items-start gap-3">
         <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${accent.icon}`}>
           <Icon size={18} />

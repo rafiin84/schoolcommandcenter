@@ -14,10 +14,10 @@ const LEVEL_LABEL: Record<LeadershipContact["administrativeLevel"], string> = {
 };
 
 const LEVEL_ACCENT: Record<LeadershipContact["administrativeLevel"], { card: string; avatar: string; badge: string }> = {
-  state: { card: "border-l-primary", avatar: "bg-primary/10 text-primary", badge: "border-primary/30 bg-primary/8 text-primary" },
-  district: { card: "border-l-chart-1", avatar: "bg-chart-1/10 text-chart-1", badge: "border-chart-1/30 bg-chart-1/8 text-chart-1" },
-  block: { card: "border-l-brand-accent", avatar: "bg-brand-accent/10 text-brand-accent", badge: "border-brand-accent/30 bg-brand-accent/8 text-brand-accent" },
-  school: { card: "border-l-chart-5", avatar: "bg-chart-5/10 text-chart-5", badge: "border-chart-5/30 bg-chart-5/8 text-chart-5" },
+  state: { card: "bg-primary/5", avatar: "bg-primary/10 text-primary", badge: "bg-primary/8 text-primary" },
+  district: { card: "bg-chart-1/5", avatar: "bg-chart-1/10 text-chart-1", badge: "bg-chart-1/8 text-chart-1" },
+  block: { card: "bg-brand-accent/5", avatar: "bg-brand-accent/10 text-brand-accent", badge: "bg-brand-accent/8 text-brand-accent" },
+  school: { card: "bg-chart-5/5", avatar: "bg-chart-5/10 text-chart-5", badge: "bg-chart-5/8 text-chart-5" },
 };
 
 function initialsFor(name: string): string {
@@ -39,7 +39,7 @@ export function ContactCard({
   const accent = LEVEL_ACCENT[contact.administrativeLevel];
 
   return (
-    <div className={`flex flex-col gap-4 rounded-2xl border-l-4 bg-card p-4 sm:p-5 ${accent.card}`}>
+    <div className={`flex flex-col gap-4 rounded-2xl p-4 sm:p-5 ${accent.card}`}>
       <div className="flex items-start gap-3">
         <Avatar className="size-11">
           <AvatarFallback className={`font-semibold ${accent.avatar}`}>{initialsFor(contact.name)}</AvatarFallback>
@@ -48,7 +48,7 @@ export function ContactCard({
           <p className="truncate text-sm font-semibold text-foreground">{contact.name}</p>
           <p className="text-xs text-muted-foreground">{contact.title}</p>
         </div>
-        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-medium ${accent.badge}`}>
+        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${accent.badge}`}>
           {LEVEL_LABEL[contact.administrativeLevel]}
         </span>
       </div>

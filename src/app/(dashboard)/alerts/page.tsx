@@ -81,15 +81,15 @@ function AlertsContent() {
       />
 
       <div className="mb-4 grid grid-cols-3 gap-3">
-        <div className="rounded-xl border border-primary/20 bg-primary/8 p-3">
+        <div className="rounded-xl bg-primary/8 p-3">
           <p className="text-xs text-muted-foreground">Total matching</p>
           <p className="text-xl font-semibold tabular-nums">{counts.total}</p>
         </div>
-        <div className="rounded-xl border border-status-critical/20 bg-status-critical/8 p-3">
+        <div className="rounded-xl bg-status-critical/8 p-3">
           <p className="text-xs text-muted-foreground">Open</p>
           <p className="text-xl font-semibold tabular-nums text-status-critical">{counts.open}</p>
         </div>
-        <div className="rounded-xl border border-chart-4/20 bg-chart-4/8 p-3">
+        <div className="rounded-xl bg-chart-4/8 p-3">
           <p className="text-xs text-muted-foreground">Critical priority</p>
           <p className="text-xl font-semibold tabular-nums">{counts.critical}</p>
         </div>
