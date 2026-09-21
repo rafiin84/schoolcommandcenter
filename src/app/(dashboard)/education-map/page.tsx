@@ -117,7 +117,7 @@ function EducationMapContent() {
   }
 
   return (
-    <ContentContainer className="max-w-none px-3 pt-3 sm:px-4 sm:pt-4 lg:px-4 lg:pt-4">
+    <ContentContainer className="max-w-none px-3 pt-3 pb-3 sm:px-4 sm:pt-4 sm:pb-4 lg:px-4 lg:pt-4 lg:pb-4">
       <div className="mb-4 flex items-center justify-end gap-2">
         <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
           <FunnelSimple size={15} />
@@ -193,9 +193,9 @@ function EducationMapContent() {
 
       <div className={cn("grid grid-cols-1 gap-4", selectedNode && "lg:grid-cols-[1fr_380px]")}>
         <div className="flex flex-col gap-3">
-          <div className="min-h-[520px] overflow-hidden rounded-2xl border border-border bg-card p-2">
+          <div className="h-[calc(100vh-220px)] min-h-[520px] overflow-hidden rounded-2xl border border-border bg-card p-2">
             {filteredNodes.isLoading ? (
-              <div className="flex h-[520px] items-center justify-center text-sm text-muted-foreground">
+              <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
                 Loading map data…
               </div>
             ) : filteredNodes.isError ? (
@@ -232,7 +232,7 @@ function EducationMapContent() {
         </div>
 
         {selectedNode && (
-          <div className="hidden rounded-2xl border border-border bg-card lg:sticky lg:top-20 lg:block lg:max-h-[calc(100svh-6rem)] lg:min-h-[520px] lg:overflow-hidden">
+          <div className="hidden rounded-2xl border border-border bg-card lg:sticky lg:top-20 lg:block lg:h-[calc(100vh-220px)] lg:min-h-[520px] lg:overflow-hidden">
             <MapDetailPanel node={selectedNode} onClose={() => selectEntity(null)} />
           </div>
         )}
