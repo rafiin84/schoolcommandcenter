@@ -23,6 +23,13 @@ const INSIGHT_ICON: Record<InsightType, React.ComponentType<IconProps>> = {
   positive_trend: TrendUp,
 };
 
+const INSIGHT_ACCENT: Record<InsightType, { card: string; icon: string }> = {
+  deployment_gap: { card: "border-l-chart-1", icon: "bg-chart-1/10 text-chart-1" },
+  engagement_pattern: { card: "border-l-chart-5", icon: "bg-chart-5/10 text-chart-5" },
+  operational_risk: { card: "border-l-status-critical", icon: "bg-status-critical/10 text-status-critical" },
+  positive_trend: { card: "border-l-status-good", icon: "bg-status-good/10 text-status-good" },
+};
+
 export function AiInsightCard({
   insight,
   defaultExpanded = false,
@@ -33,11 +40,12 @@ export function AiInsightCard({
   const [expanded, setExpanded] = useState(defaultExpanded);
   const contentId = useId();
   const Icon = INSIGHT_ICON[insight.insightType];
+  const accent = INSIGHT_ACCENT[insight.insightType];
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <div className={`rounded-2xl border border-l-4 border-border bg-card p-4 sm:p-5 ${accent.card}`}>
       <div className="flex items-start gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-accent/10 text-brand-accent">
+        <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${accent.icon}`}>
           <Icon size={18} />
         </span>
         <div className="min-w-0 flex-1 space-y-1.5">

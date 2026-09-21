@@ -16,6 +16,13 @@ const STATUS_LABEL: Record<AlertException["status"], string> = {
   resolved: "Resolved",
 };
 
+const PRIORITY_ACCENT: Record<AlertException["priority"], string> = {
+  low: "border-l-border bg-card",
+  medium: "border-l-status-warning bg-status-warning/6",
+  high: "border-l-status-serious bg-status-serious/6",
+  critical: "border-l-status-critical bg-status-critical/6",
+};
+
 export function AlertCard({
   alert,
   compact = false,
@@ -27,7 +34,10 @@ export function AlertCard({
     <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 30 }}>
       <Link
         href={`/alerts/${alert.id}`}
-        className="block rounded-2xl border border-border bg-card p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:p-5"
+        className={cn(
+          "block rounded-2xl border border-l-4 border-border p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:p-5",
+          PRIORITY_ACCENT[alert.priority],
+        )}
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">

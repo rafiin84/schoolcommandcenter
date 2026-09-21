@@ -19,6 +19,13 @@ const TYPE_ICON: Record<NotificationType, React.ComponentType<{ size?: number; c
   engagement: BellRinging,
 };
 
+const TYPE_UNREAD_CLASS: Record<NotificationType, string> = {
+  alert: "bg-status-critical/12 text-status-critical",
+  deployment: "bg-chart-1/15 text-chart-1",
+  system: "bg-brand-accent/15 text-brand-accent",
+  engagement: "bg-chart-5/15 text-chart-5",
+};
+
 function linkFor(notification: Notification): string {
   if (notification.linkedEntityType === "alert" && notification.linkedEntityId) {
     return `/alerts/${notification.linkedEntityId}`;
@@ -74,9 +81,7 @@ export function NotificationPreviewList({
               <span
                 className={cn(
                   "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full",
-                  notification.read
-                    ? "bg-muted text-muted-foreground"
-                    : "bg-primary/10 text-primary",
+                  notification.read ? "bg-muted text-muted-foreground" : TYPE_UNREAD_CLASS[notification.type],
                 )}
               >
                 <Icon size={16} />

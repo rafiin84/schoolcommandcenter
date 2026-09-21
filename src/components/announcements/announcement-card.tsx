@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDateTime, formatRelativeTime } from "@/lib/formatters";
 import {
   ANNOUNCEMENT_CATEGORY_BADGE_CLASS,
+  ANNOUNCEMENT_CATEGORY_CARD_ACCENT,
   ANNOUNCEMENT_CATEGORY_LABEL,
 } from "@/lib/constants/announcement-categories";
 import { useAnnouncementStore } from "@/store/announcement-store";
@@ -30,7 +31,9 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
   const dismissAnnouncement = useAnnouncementStore((s) => s.dismissAnnouncement);
 
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <article
+      className={`flex flex-col gap-3 rounded-2xl border border-l-4 border-border p-4 sm:p-5 ${ANNOUNCEMENT_CATEGORY_CARD_ACCENT[announcement.category]}`}
+    >
       <header className="flex items-start gap-3">
         <Avatar>
           <AvatarFallback className={`text-xs font-semibold text-white ${avatarColorFor(announcement.authorName)}`}>

@@ -23,3 +23,11 @@ export const ANNOUNCEMENT_CATEGORY_BADGE_CLASS: Record<AnnouncementCategory, str
   guidance: "bg-status-warning/10 text-status-warning",
   introduction: "bg-primary/10 text-primary",
 };
+
+export const ANNOUNCEMENT_CATEGORY_CARD_ACCENT: Record<AnnouncementCategory, string> = {
+  milestone: "border-l-status-good bg-status-good/5",
+  update: "border-l-status-info bg-status-info/5",
+  insight: "border-l-brand-accent bg-brand-accent/5",
+  guidance: "border-l-status-warning bg-status-warning/6",
+  introduction: "border-l-primary bg-primary/5",
+};

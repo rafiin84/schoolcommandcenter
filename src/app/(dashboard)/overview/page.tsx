@@ -73,6 +73,7 @@ export default function OverviewPage() {
                 trend: { direction: snapshot.trendDirection, label: `${snapshot.targetVariance >= 0 ? "+" : ""}${snapshot.targetVariance} pts vs target` },
                 icon: Buildings,
                 href: "/education-map",
+                tone: "navy",
               },
               {
                 label: "Student accounts created",
@@ -80,6 +81,7 @@ export default function OverviewPage() {
                 helpText: "Cumulative, statewide",
                 icon: GraduationCap,
                 href: "/education-map",
+                tone: "blue",
               },
               {
                 label: "Teacher accounts created",
@@ -87,23 +89,27 @@ export default function OverviewPage() {
                 helpText: "Cumulative, statewide",
                 icon: UsersThree,
                 href: "/education-map",
+                tone: "teal",
               },
               {
                 label: "Active accounts",
                 value: formatCompactNumber(snapshot.activeAccounts),
                 helpText: "Illustrative weekly active usage",
                 icon: CheckCircle,
+                tone: "green",
               },
               {
                 label: "Engagement rate",
                 value: formatPercent(snapshot.engagementRate),
                 helpText: "Average across onboarded schools",
                 icon: ChartLineUp,
+                tone: "pink",
               },
               {
                 label: "Readiness rate",
                 value: formatPercent(snapshot.readinessRate),
                 helpText: "Share of schools fully onboarded",
+                tone: "amber",
               },
               {
                 label: "Open issues",
@@ -111,11 +117,13 @@ export default function OverviewPage() {
                 helpText: "Across all open alerts",
                 icon: Warning,
                 href: "/alerts",
+                tone: "red",
               },
               {
                 label: "District coverage",
                 value: `${overview.data!.data.districtsOnTrack} / ${overview.data!.data.totalDistricts}`,
                 helpText: "Districts on track vs. statewide target",
+                tone: "orange",
               },
             ]}
           />
