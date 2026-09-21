@@ -27,4 +27,7 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { href: "/directory", label: "Directory", icon: AddressBook },
 ];
 
-export const MOBILE_NAV_ITEMS: NavItem[] = PRIMARY_NAV_ITEMS.slice(0, 5);
+// The mobile bottom bar shows these 4, plus a 5th "More" button that opens
+// a sheet listing everything in MOBILE_OVERFLOW_NAV_ITEMS.
+export const MOBILE_NAV_ITEMS: NavItem[] = PRIMARY_NAV_ITEMS.slice(0, 4);
+export const MOBILE_OVERFLOW_NAV_ITEMS: NavItem[] = PRIMARY_NAV_ITEMS.slice(4);

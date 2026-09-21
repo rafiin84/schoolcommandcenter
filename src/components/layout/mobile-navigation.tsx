@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MOBILE_NAV_ITEMS } from "@/components/navigation/nav-items";
+import { List } from "@phosphor-icons/react/dist/ssr";
+import { MOBILE_NAV_ITEMS, MOBILE_OVERFLOW_NAV_ITEMS } from "@/components/navigation/nav-items";
+import { useUiStore } from "@/store/ui-store";
 import { cn } from "@/lib/utils";
 
 export function MobileNavigation() {
   const pathname = usePathname();
+  const isMoreOpen = useUiStore((s) => s.isMobileNavOpen);
+  const setMoreOpen = useUiStore((s) => s.setMobileNavOpen);
+  const isMoreActive = MOBILE_OVERFLOW_NAV_ITEMS.some((item) => pathname.startsWith(item.href));
 
   return (
     <nav
@@ -32,6 +37,19 @@ export function MobileNavigation() {
           </Link>
         );
       })}
+      <button
+        type="button"
+        onClick={() => setMoreOpen(!isMoreOpen)}
+        className={cn(
+          "flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-medium text-muted-foreground transition-colors",
+          isMoreActive && "text-primary",
+        )}
+        aria-haspopup="menu"
+        aria-expanded={isMoreOpen}
+      >
+        <List size={21} weight={isMoreActive ? "fill" : "regular"} />
+        <span className="leading-none">More</span>
+      </button>
     </nav>
   );
 }
