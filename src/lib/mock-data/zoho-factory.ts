@@ -29,7 +29,7 @@ export function generateZohoAccounts(schools: School[]): ZohoClassesAccount[] {
         id: school.zohoAccountId as string,
         accountName: `${school.name} — Zoho Classes`,
         accountReference: `ZC-${school.schoolCode}`,
-        loginUrl: "https://classes.zoho.com/mock/login",
+        loginUrl: "https://web.zohoclasses.in/login/",
         environmentLabel:
           ENVIRONMENT_LABELS[
             Math.floor(rng() * ENVIRONMENT_LABELS.length)

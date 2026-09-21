@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowSquareOut, LockKey, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
-import type { ZohoClassesAccount } from "@/types";
+import type { DirectorySchoolAccount } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -13,16 +13,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/formatters";
 
-export function ZohoAccessConfirmation({
+export function DirectoryAccessConfirmation({
   open,
   onOpenChange,
-  schoolName,
   account,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  schoolName: string;
-  account: ZohoClassesAccount;
+  account: DirectorySchoolAccount;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,18 +35,18 @@ export function ZohoAccessConfirmation({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2 rounded-xl border border-border bg-muted/50 p-4 text-sm">
-          <div className="flex justify-between gap-3">
-            <span className="text-muted-foreground">School</span>
-            <span className="font-medium text-foreground">{schoolName}</span>
+        <div className="space-y-3 rounded-xl border border-border bg-muted/50 p-4 text-sm">
+          <div>
+            <p className="text-xs text-muted-foreground">School</p>
+            <p className="font-medium text-foreground">{account.schoolName}</p>
           </div>
-          <div className="flex justify-between gap-3">
-            <span className="text-muted-foreground">Account</span>
-            <span className="font-medium text-foreground">{account.accountName}</span>
+          <div>
+            <p className="text-xs text-muted-foreground">Login email</p>
+            <p className="text-data font-medium break-all text-foreground">{account.loginEmail}</p>
           </div>
           <div className="flex justify-between gap-3">
             <span className="text-muted-foreground">Environment</span>
-            <span className="font-medium text-foreground">{account.environmentLabel}</span>
+            <span className="text-right font-medium text-foreground">{account.environmentLabel}</span>
           </div>
           <div className="flex justify-between gap-3">
             <span className="text-muted-foreground">Destination</span>
@@ -56,7 +54,7 @@ export function ZohoAccessConfirmation({
           </div>
           <div className="flex justify-between gap-3">
             <span className="text-muted-foreground">Last verified</span>
-            <span className="font-medium text-foreground">{formatDateTime(account.lastVerifiedAt)}</span>
+            <span className="text-right font-medium text-foreground">{formatDateTime(account.lastVerifiedAt)}</span>
           </div>
         </div>
 
@@ -64,7 +62,7 @@ export function ZohoAccessConfirmation({
           <LockKey size={16} className="mt-0.5 shrink-0 text-status-info" />
           <p>
             The Command Center does not store or transmit Zoho Classes passwords. You&apos;ll sign in
-            on the Zoho Classes login page using your assigned email and password.
+            on the Zoho Classes login page using the email above and your assigned password.
           </p>
         </div>
 
@@ -74,9 +72,7 @@ export function ZohoAccessConfirmation({
           </Button>
           <Button
             nativeButton={false}
-            render={
-              <a href={account.loginUrl} target="_blank" rel="noopener noreferrer" />
-            }
+            render={<a href={account.loginUrl} target="_blank" rel="noopener noreferrer" />}
             className="gap-2"
             onClick={() => onOpenChange(false)}
           >

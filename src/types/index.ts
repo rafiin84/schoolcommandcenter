@@ -6,3 +6,6 @@ export * from "./alert";
 export * from "./contact";
 export * from "./notification";
 export * from "./ai-insight";
+export * from "./announcement";
+export * from "./school-directory";
+export * from "./course-template";

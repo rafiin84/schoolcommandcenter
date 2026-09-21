@@ -6,6 +6,7 @@ import {
 } from "@/lib/constants";
 import { generateAiInsights } from "./ai-insight-factory";
 import { generateAlerts } from "./alert-factory";
+import { generateAnnouncements } from "./announcement-factory";
 import { generateLeadershipDirectory } from "./contact-factory";
 import { generateGeography, toHierarchyNodes } from "./geography-factory";
 import { computeDistrictSnapshots, computeStateSnapshot } from "./kpi-factory";
@@ -24,6 +25,7 @@ function buildDatabase() {
   const contacts = generateLeadershipDirectory(districts, blocks, schools);
   const alerts = generateAlerts(districts, blocks, schools, contacts);
   const notifications = generateNotifications(alerts, districts);
+  const announcements = generateAnnouncements(districts);
 
   const blockDistrictById = new Map(blocks.map((b) => [b.id, b.districtId]));
   const schoolDistrictById = new Map(schools.map((s) => [s.id, s.districtId]));
@@ -71,6 +73,7 @@ function buildDatabase() {
     contacts,
     alerts,
     notifications,
+    announcements,
     stateSnapshot,
     districtSnapshots,
     aiInsights,
