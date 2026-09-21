@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { ContentContainer } from "@/components/layout/content-container";
-import { PageHeader } from "@/components/layout/page-header";
 import { DirectoryAccountCard } from "@/components/zoho/directory-account-card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -47,12 +46,6 @@ export default function ZohoAccessPage() {
 
   return (
     <ContentContainer>
-      <PageHeader
-        eyebrow="Tamil Nadu · Navigation"
-        title="Zoho Classes Access"
-        description="A directory of mapped Zoho Classes environments, sourced from the real Tamil Nadu school directory."
-      />
-
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-foreground">District</label>

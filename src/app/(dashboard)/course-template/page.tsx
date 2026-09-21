@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowSquareOut, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { ContentContainer } from "@/components/layout/content-container";
-import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,23 +40,18 @@ export default function CourseTemplatePage() {
 
   return (
     <ContentContainer>
-      <PageHeader
-        eyebrow="Zoho Classes"
-        title="Course Template"
-        description="Browse Zoho Classes course templates without leaving the Command Center."
-        actions={
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            nativeButton={false}
-            render={<a href={TEMPLATE_GALLERY_URL} target="_blank" rel="noopener noreferrer" />}
-          >
-            Open full gallery
-            <ArrowSquareOut size={14} />
-          </Button>
-        }
-      />
+      <div className="mb-4 flex items-center justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2"
+          nativeButton={false}
+          render={<a href={TEMPLATE_GALLERY_URL} target="_blank" rel="noopener noreferrer" />}
+        >
+          Open full gallery
+          <ArrowSquareOut size={14} />
+        </Button>
+      </div>
 
       <form
         onSubmit={(e) => {

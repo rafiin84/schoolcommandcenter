@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { FunnelSimple, ListBullets, MapTrifold } from "@phosphor-icons/react/dist/ssr";
 import type { GeographicHierarchy } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
-import { PageHeader } from "@/components/layout/page-header";
 import { GeographyBreadcrumbs } from "@/components/map/geography-breadcrumbs";
 import { MapFilters } from "@/components/map/map-filters";
 import { MapLegend } from "@/components/map/map-legend";
@@ -119,48 +118,41 @@ function EducationMapContent() {
 
   return (
     <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
-      <PageHeader
-        eyebrow="Tamil Nadu"
-        title="Education Map"
-        description="Explore statewide deployment geographically — drill from districts into blocks and schools."
-        actions={
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
-              <FunnelSimple size={15} />
-              Filter
-              {activeFilterCount > 0 && (
-                <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-                  {activeFilterCount}
-                </span>
-              )}
-            </Button>
-            <div className="flex overflow-hidden rounded-full border border-border">
-              <button
-                type="button"
-                onClick={() => setView("map")}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
-                  view === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-                )}
-                aria-pressed={view === "map"}
-              >
-                <MapTrifold size={15} /> Map
-              </button>
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
-                  view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-                )}
-                aria-pressed={view === "list"}
-              >
-                <ListBullets size={15} /> List
-              </button>
-            </div>
-          </div>
-        }
-      />
+      <div className="mb-4 flex items-center justify-end gap-2">
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
+          <FunnelSimple size={15} />
+          Filter
+          {activeFilterCount > 0 && (
+            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+              {activeFilterCount}
+            </span>
+          )}
+        </Button>
+        <div className="flex overflow-hidden rounded-full border border-border">
+          <button
+            type="button"
+            onClick={() => setView("map")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
+              view === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+            )}
+            aria-pressed={view === "map"}
+          >
+            <MapTrifold size={15} /> Map
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("list")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
+              view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+            )}
+            aria-pressed={view === "list"}
+          >
+            <ListBullets size={15} /> List
+          </button>
+        </div>
+      </div>
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <GeographyBreadcrumbs

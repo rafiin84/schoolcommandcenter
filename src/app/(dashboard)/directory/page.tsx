@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import type { AdministrativeLevel, GeographicHierarchy, LeadershipContact } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
-import { PageHeader } from "@/components/layout/page-header";
 import { ContactCard } from "@/components/directory/contact-card";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -60,12 +59,6 @@ export default function DirectoryPage() {
 
   return (
     <ContentContainer>
-      <PageHeader
-        eyebrow="Tamil Nadu · Accountability"
-        title="Directory"
-        description="Leadership and administrative contacts, organized by geographic and administrative scope."
-      />
-
       <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
         <div className="relative">
           <MagnifyingGlass

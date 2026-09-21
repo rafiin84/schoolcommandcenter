@@ -4,7 +4,6 @@ import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle, FunnelSimple } from "@phosphor-icons/react/dist/ssr";
 import { ContentContainer } from "@/components/layout/content-container";
-import { PageHeader } from "@/components/layout/page-header";
 import { AlertFilters, type AlertFilterState } from "@/components/alerts/alert-filters";
 import { AlertCard } from "@/components/alerts/alert-card";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -84,22 +83,17 @@ function AlertsContent() {
 
   return (
     <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
-      <PageHeader
-        eyebrow="Tamil Nadu · Oversight"
-        title="Alerts & Exceptions"
-        description="Target-based exceptions across deployment, engagement, operational health, and support."
-        actions={
-          <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
-            <FunnelSimple size={15} />
-            Filter
-            {activeFilterCount > 0 && (
-              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-                {activeFilterCount}
-              </span>
-            )}
-          </Button>
-        }
-      />
+      <div className="mb-4 flex items-center justify-end">
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
+          <FunnelSimple size={15} />
+          Filter
+          {activeFilterCount > 0 && (
+            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+              {activeFilterCount}
+            </span>
+          )}
+        </Button>
+      </div>
 
       <div className="mb-4 grid grid-cols-3 gap-3">
         <div className="rounded-xl bg-primary/8 p-3">
