@@ -191,7 +191,7 @@ function EducationMapContent() {
         </SheetContent>
       </Sheet>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_380px]">
+      <div className={cn("grid grid-cols-1 gap-4", selectedNode && "lg:grid-cols-[1fr_380px]")}>
         <div className="flex flex-col gap-3">
           <div className="min-h-[520px] overflow-hidden rounded-2xl border border-border bg-card p-2">
             {filteredNodes.isLoading ? (
@@ -231,18 +231,11 @@ function EducationMapContent() {
           </div>
         </div>
 
-        <div className="hidden rounded-2xl border border-border bg-card lg:sticky lg:top-20 lg:block lg:max-h-[calc(100svh-6rem)] lg:min-h-[520px] lg:overflow-hidden">
-          {selectedNode ? (
+        {selectedNode && (
+          <div className="hidden rounded-2xl border border-border bg-card lg:sticky lg:top-20 lg:block lg:max-h-[calc(100svh-6rem)] lg:min-h-[520px] lg:overflow-hidden">
             <MapDetailPanel node={selectedNode} onClose={() => selectEntity(null)} />
-          ) : (
-            <div className="flex h-full items-center justify-center p-8">
-              <EmptyState
-                title="Select a region"
-                description="Click a district, block, or school to see its details here."
-              />
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {!isDesktop && (
