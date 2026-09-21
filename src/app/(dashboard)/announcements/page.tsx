@@ -66,7 +66,7 @@ export default function AnnouncementsPage() {
   }, [feed, districts.data]);
 
   return (
-    <ContentContainer className="lg:max-w-none">
+    <ContentContainer>
       <PageHeader
         eyebrow="Tamil Nadu · Updates"
         title="Announcements"

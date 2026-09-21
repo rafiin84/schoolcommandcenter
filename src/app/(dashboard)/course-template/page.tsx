@@ -40,7 +40,7 @@ export default function CourseTemplatePage() {
   const totalRecords = query.data?.pages[0]?.totalRecords ?? 0;
 
   return (
-    <ContentContainer className="lg:max-w-none">
+    <ContentContainer>
       <PageHeader
         eyebrow="Zoho Classes"
         title="Course Template"

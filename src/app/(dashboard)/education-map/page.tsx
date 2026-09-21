@@ -111,7 +111,7 @@ function EducationMapContent() {
   }
 
   return (
-    <ContentContainer className="lg:max-w-none">
+    <ContentContainer>
       <PageHeader
         eyebrow="Tamil Nadu"
         title="Education Map"
