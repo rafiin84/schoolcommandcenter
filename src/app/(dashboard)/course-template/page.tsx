@@ -93,7 +93,9 @@ export default function CourseTemplatePage() {
             Results for <span className="font-semibold text-foreground">&ldquo;{search}&rdquo;</span>
           </>
         ) : (
-          <span className="font-semibold text-foreground">Recently added courses</span>
+          <>
+            recently added <span className="font-semibold text-foreground">courses</span>
+          </>
         )}
       </p>
 

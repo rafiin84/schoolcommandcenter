@@ -61,10 +61,10 @@ export function TemplateCard({ template }: { template: CourseTemplate }) {
           className="group relative aspect-video w-full overflow-hidden disabled:cursor-default"
           style={{ backgroundColor: color }}
         >
-          <span className="absolute -top-6 -right-6 size-24 rounded-full bg-white/15" />
-          <span className="absolute -bottom-8 -left-4 size-20 rounded-full bg-black/10" />
+          <span className="absolute -top-8 -left-8 size-28 rounded-[40%] bg-white/20" />
+          <span className="absolute -bottom-10 -right-6 size-24 rounded-full bg-black/10" />
 
-          <span className="absolute left-3 top-3 max-w-[80%] rounded-lg bg-white/90 px-2.5 py-1.5 text-xs font-semibold text-foreground shadow-sm line-clamp-2">
+          <span className="absolute inset-x-4 top-4 line-clamp-3 text-left text-base font-bold leading-snug text-foreground/90 drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">
             {template.title}
           </span>
 
