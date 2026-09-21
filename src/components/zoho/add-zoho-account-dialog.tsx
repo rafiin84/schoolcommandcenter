@@ -99,8 +99,8 @@ export function AddZohoAccountDialog({ allAccounts }: { allAccounts: DirectorySc
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button size="sm" className="gap-2">
-            <Plus size={15} />
+          <Button className="h-11 gap-2 px-5 text-base">
+            <Plus size={17} />
             Add Zoho Classes Account
           </Button>
         }
