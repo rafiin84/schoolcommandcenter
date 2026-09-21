@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { CheckCircle, FunnelSimple } from "@phosphor-icons/react/dist/ssr";
 import { ContentContainer } from "@/components/layout/content-container";
 import { PageHeader } from "@/components/layout/page-header";
 import { AlertFilters, type AlertFilterState } from "@/components/alerts/alert-filters";
@@ -10,6 +10,8 @@ import { AlertCard } from "@/components/alerts/alert-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useAlerts } from "@/hooks/use-alerts";
@@ -28,6 +30,14 @@ function AlertsContent() {
     sortBy: "priority",
   });
   const [groupByGeography, setGroupByGeography] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const activeFilterCount =
+    (filters.search ? 1 : 0) +
+    filters.priority.length +
+    filters.status.length +
+    filters.category.length +
+    (groupByGeography ? 1 : 0);
 
   const alerts = useAlerts({
     search: filters.search || undefined,
@@ -73,11 +83,22 @@ function AlertsContent() {
   }, [groupByGeography, data, allNodes.data]);
 
   return (
-    <ContentContainer>
+    <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
       <PageHeader
         eyebrow="Tamil Nadu · Oversight"
         title="Alerts & Exceptions"
         description="Target-based exceptions across deployment, engagement, operational health, and support."
+        actions={
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
+            <FunnelSimple size={15} />
+            Filter
+            {activeFilterCount > 0 && (
+              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                {activeFilterCount}
+              </span>
+            )}
+          </Button>
+        }
       />
 
       <div className="mb-4 grid grid-cols-3 gap-3">
@@ -95,15 +116,22 @@ function AlertsContent() {
         </div>
       </div>
 
-      <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
-        <AlertFilters value={filters} onChange={setFilters} />
-        <div className="flex items-center gap-2 border-t border-border pt-3">
-          <Switch id="group-toggle" checked={groupByGeography} onCheckedChange={setGroupByGeography} />
-          <Label htmlFor="group-toggle" className="text-sm text-muted-foreground">
-            Group by district
-          </Label>
-        </div>
-      </div>
+      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-md">
+          <SheetHeader className="border-b border-border px-5 py-5">
+            <SheetTitle>Filters</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col gap-4 p-5">
+            <AlertFilters value={filters} onChange={setFilters} />
+            <div className="flex items-center gap-2 border-t border-border pt-4">
+              <Switch id="group-toggle" checked={groupByGeography} onCheckedChange={setGroupByGeography} />
+              <Label htmlFor="group-toggle" className="text-sm text-muted-foreground">
+                Group by district
+              </Label>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {alerts.isLoading ? (
         <ListSkeleton count={6} />

@@ -1,18 +1,19 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { SearchCommand } from "@/components/navigation/search-command";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { pageTitleFor } from "@/components/navigation/nav-items";
 
 export function TopBar() {
+  const pathname = usePathname();
+  const title = pageTitleFor(pathname);
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-6 lg:px-8">
-      <div className="hidden flex-1 md:flex md:justify-start">
-        <SearchCommand />
-      </div>
-      <div className="flex flex-1 md:hidden">
-        <span className="text-sm font-semibold">School Command Center</span>
+      <div className="flex flex-1 items-center">
+        <span className="text-base font-semibold text-foreground truncate">{title}</span>
       </div>
 
       <div className="flex shrink-0 items-center gap-1.5">

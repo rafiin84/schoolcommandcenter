@@ -31,3 +31,19 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
 // a sheet listing everything in MOBILE_OVERFLOW_NAV_ITEMS.
 export const MOBILE_NAV_ITEMS: NavItem[] = PRIMARY_NAV_ITEMS.slice(0, 4);
 export const MOBILE_OVERFLOW_NAV_ITEMS: NavItem[] = PRIMARY_NAV_ITEMS.slice(4);
+
+// Route → title lookup for the top bar, covering routes that aren't in the
+// sidebar nav (e.g. notifications, alert detail) as well as the ones that are.
+const TITLE_ROUTES: { href: string; title: string }[] = [
+  ...PRIMARY_NAV_ITEMS.map((item) => ({ href: item.href, title: item.label })),
+  { href: "/alerts/", title: "Alert details" },
+  { href: "/notifications", title: "Notifications" },
+];
+
+export function pageTitleFor(pathname: string): string {
+  if (pathname === "/alerts") return "Alerts & Exceptions";
+  const match = TITLE_ROUTES.filter((r) => pathname.startsWith(r.href)).sort(
+    (a, b) => b.href.length - a.href.length,
+  )[0];
+  return match?.title ?? "School Command Center";
+}

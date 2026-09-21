@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ListBullets, MapTrifold } from "@phosphor-icons/react/dist/ssr";
+import { FunnelSimple, ListBullets, MapTrifold } from "@phosphor-icons/react/dist/ssr";
 import type { GeographicHierarchy } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
 import { PageHeader } from "@/components/layout/page-header";
@@ -35,7 +35,14 @@ function EducationMapContent() {
 
   const [view, setView] = useState<"map" | "list">("map");
   const [focusResolved, setFocusResolved] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const isDesktop = useIsDesktop();
+
+  const activeFilterCount =
+    (filters.search ? 1 : 0) +
+    filters.priority.length +
+    filters.onboardingStatus.length +
+    (filters.maxEngagement !== null ? 1 : 0);
 
   const allNodes = useEducationMapData({});
   const filteredNodes = useEducationMapData({
@@ -111,35 +118,46 @@ function EducationMapContent() {
   }
 
   return (
-    <ContentContainer>
+    <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
       <PageHeader
         eyebrow="Tamil Nadu"
         title="Education Map"
         description="Explore statewide deployment geographically — drill from districts into blocks and schools."
         actions={
-          <div className="flex overflow-hidden rounded-full border border-border">
-            <button
-              type="button"
-              onClick={() => setView("map")}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
-                view === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
+              <FunnelSimple size={15} />
+              Filter
+              {activeFilterCount > 0 && (
+                <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                  {activeFilterCount}
+                </span>
               )}
-              aria-pressed={view === "map"}
-            >
-              <MapTrifold size={15} /> Map
-            </button>
-            <button
-              type="button"
-              onClick={() => setView("list")}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
-                view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-              )}
-              aria-pressed={view === "list"}
-            >
-              <ListBullets size={15} /> List
-            </button>
+            </Button>
+            <div className="flex overflow-hidden rounded-full border border-border">
+              <button
+                type="button"
+                onClick={() => setView("map")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
+                  view === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                )}
+                aria-pressed={view === "map"}
+              >
+                <MapTrifold size={15} /> Map
+              </button>
+              <button
+                type="button"
+                onClick={() => setView("list")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
+                  view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                )}
+                aria-pressed={view === "list"}
+              >
+                <ListBullets size={15} /> List
+              </button>
+            </div>
           </div>
         }
       />
@@ -169,13 +187,20 @@ function EducationMapContent() {
         )}
       </div>
 
-      <div className="mb-4">
-        <MapFilters />
-      </div>
+      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-md">
+          <SheetHeader className="border-b border-border px-5 py-5">
+            <SheetTitle>Filters</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col gap-4 p-5">
+            <MapFilters />
+            <MapLegend />
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_380px]">
         <div className="flex flex-col gap-3">
-          <MapLegend />
           <div className="min-h-[520px] overflow-hidden rounded-2xl border border-border bg-card p-2">
             {filteredNodes.isLoading ? (
               <div className="flex h-[520px] items-center justify-center text-sm text-muted-foreground">

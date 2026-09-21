@@ -66,15 +66,15 @@ export default function AnnouncementsPage() {
   }, [feed, districts.data]);
 
   return (
-    <ContentContainer>
+    <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
       <PageHeader
         eyebrow="Tamil Nadu · Updates"
         title="Announcements"
         description="Statewide and district updates, posted for the team to see. Attachments are illustrative previews only."
       />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-        <div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[650px_1fr]">
+        <div className="w-full lg:max-w-[650px]">
           <AnnouncementComposer />
 
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -138,7 +138,15 @@ export default function AnnouncementsPage() {
           )}
         </div>
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex lg:flex-col lg:gap-4">
+          <div className="overflow-hidden rounded-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://picsum.photos/seed/scc-announcements-hero/640/480"
+              alt=""
+              className="h-56 w-full object-cover"
+            />
+          </div>
           <AnnouncementRecentActivity announcements={feed} />
         </div>
       </div>
