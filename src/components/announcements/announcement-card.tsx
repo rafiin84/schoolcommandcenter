@@ -32,7 +32,7 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
 
   return (
     <article
-      className={`flex flex-col gap-3 rounded-2xl border border-l-4 border-border p-4 sm:p-5 ${ANNOUNCEMENT_CATEGORY_CARD_ACCENT[announcement.category]}`}
+      className={`flex flex-col gap-3 rounded-2xl border-l-4 p-4 sm:p-5 ${ANNOUNCEMENT_CATEGORY_CARD_ACCENT[announcement.category]}`}
     >
       <header className="flex items-start gap-3">
         <Avatar>

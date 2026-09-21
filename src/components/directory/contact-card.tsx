@@ -39,7 +39,7 @@ export function ContactCard({
   const accent = LEVEL_ACCENT[contact.administrativeLevel];
 
   return (
-    <div className={`flex flex-col gap-4 rounded-2xl border border-l-4 border-border bg-card p-4 sm:p-5 ${accent.card}`}>
+    <div className={`flex flex-col gap-4 rounded-2xl border-l-4 bg-card p-4 sm:p-5 ${accent.card}`}>
       <div className="flex items-start gap-3">
         <Avatar className="size-11">
           <AvatarFallback className={`font-semibold ${accent.avatar}`}>{initialsFor(contact.name)}</AvatarFallback>

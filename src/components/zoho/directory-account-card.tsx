@@ -42,7 +42,7 @@ export function DirectoryAccountCard({ account }: { account: DirectorySchoolAcco
   }
 
   return (
-    <div className={cn("flex flex-col gap-4 rounded-2xl border border-l-4 border-border p-4 sm:p-5", status.accent)}>
+    <div className={cn("flex flex-col gap-4 rounded-2xl border-l-4 p-4 sm:p-5", status.accent)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-foreground">{account.schoolName}</p>

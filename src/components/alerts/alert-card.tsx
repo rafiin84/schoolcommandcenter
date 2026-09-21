@@ -35,7 +35,7 @@ export function AlertCard({
       <Link
         href={`/alerts/${alert.id}`}
         className={cn(
-          "block rounded-2xl border border-l-4 border-border p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:p-5",
+          "block rounded-2xl border-l-4 p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:p-5",
           PRIORITY_ACCENT[alert.priority],
         )}
       >
