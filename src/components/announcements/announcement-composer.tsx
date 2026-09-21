@@ -25,10 +25,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ANNOUNCEMENT_CATEGORIES } from "@/lib/constants/announcement-categories";
 import { useDistrictSummaries } from "@/hooks/use-map";
 import { useAnnouncementStore } from "@/store/announcement-store";
-import { cn } from "@/lib/utils";
 
 const STATEWIDE = "__statewide__";
 const CURRENT_USER = { name: "State Education Reviewer", role: "You", initials: "SR" };
@@ -231,24 +229,6 @@ export function AnnouncementComposer() {
             </select>
           </div>
           {errors.title && <p className="-mt-2 text-xs text-destructive">{errors.title.message}</p>}
-
-          <div className="flex flex-wrap gap-2">
-            {ANNOUNCEMENT_CATEGORIES.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setValue("category", c.id)}
-                className={cn(
-                  "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                  category === c.id
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-card text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {c.emoji} {c.label}
-              </button>
-            ))}
-          </div>
 
           <Textarea
             placeholder="What do you want to share with schools and districts?"
