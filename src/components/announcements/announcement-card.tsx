@@ -21,7 +21,7 @@ const AVATAR_COLORS = [
   "bg-fuchsia-600",
 ];
 
-function avatarColorFor(name: string): string {
+export function avatarColorFor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
   return AVATAR_COLORS[hash % AVATAR_COLORS.length];

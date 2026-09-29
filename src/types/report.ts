@@ -17,15 +17,12 @@ export interface ReportAcademicItem {
   createdAt: string;
 }
 
-export type ReportCourseTone = "green" | "purple";
-
 export interface ReportCourse {
   id: string;
   yearLabel: string;
   subject: string;
   title: string;
   description: string;
-  tone: ReportCourseTone;
   authorName?: string;
   publishedAt?: string;
 }

@@ -2,189 +2,211 @@
 
 import { useMemo, useState } from "react";
 import type { IconProps } from "@phosphor-icons/react";
-import { AndroidLogo, DeviceMobile, MagnifyingGlass, Rss } from "@phosphor-icons/react/dist/ssr";
+import { AndroidLogo, AppleLogo, Clock, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { SectionHeader } from "@/components/layout/section-header";
 import { EmptyState } from "@/components/shared/empty-state";
-import { formatDateTime, formatNumber } from "@/lib/formatters";
+import { avatarColorFor } from "@/components/announcements/announcement-card";
+import { formatDateTime } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
-import type {
-  ReportAcademicItem,
-  ReportAnnouncement,
-  ReportAttendance,
-  ReportCourse,
-  ReportDevice,
-  ReportDeviceSummary,
-  ReportFeed,
-} from "@/types";
+import type { ReportAcademicItem, ReportAnnouncement, ReportCourse, ReportDevice, ReportFeed } from "@/types";
+
+// Same per-module tones as the Overview "Zoho Classes module activity" cards.
+export type ReportTone = "navy" | "blue" | "orange" | "red" | "green" | "teal";
+
+const TONE: Record<ReportTone, { chip: string; item: string; tile: string }> = {
+  navy: { chip: "bg-primary/15 text-primary", item: "bg-primary/6", tile: "bg-primary/15 text-primary" },
+  blue: { chip: "bg-chart-1/15 text-chart-1", item: "bg-chart-1/6", tile: "bg-chart-1/15 text-chart-1" },
+  orange: { chip: "bg-chart-2/15 text-chart-2", item: "bg-chart-2/6", tile: "bg-chart-2/15 text-chart-2" },
+  red: {
+    chip: "bg-status-critical/15 text-status-critical",
+    item: "bg-status-critical/6",
+    tile: "bg-status-critical/15 text-status-critical",
+  },
+  green: { chip: "bg-chart-3/15 text-chart-3", item: "bg-chart-3/6", tile: "bg-chart-3/15 text-chart-3" },
+  teal: {
+    chip: "bg-brand-accent/15 text-brand-accent",
+    item: "bg-brand-accent/6",
+    tile: "bg-brand-accent/15 text-brand-accent",
+  },
+};
 
 export function ReportPanel({
   title,
+  description,
+  icon: Icon,
+  tone,
+  count,
   children,
   className,
 }: {
   title: string;
+  description?: string;
+  icon: React.ComponentType<IconProps>;
+  tone: ReportTone;
+  count?: number;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
-    <section className={cn("flex flex-col overflow-hidden rounded-2xl border border-border bg-card", className)}>
-      <h3 className="border-b border-border px-4 py-3 text-sm font-semibold text-foreground">{title}</h3>
-      <div className="flex-1">{children}</div>
+    <section className={cn("rounded-2xl border border-border bg-card p-4 sm:p-6", className)}>
+      <SectionHeader
+        title={title}
+        description={description}
+        actions={
+          <>
+            {count !== undefined && (
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                {count} recent
+              </span>
+            )}
+            <span className={cn("flex size-8 items-center justify-center rounded-lg", TONE[tone].chip)}>
+              <Icon size={16} />
+            </span>
+          </>
+        }
+      />
+      {children}
     </section>
   );
 }
 
-function Byline({ authorName, date }: { authorName?: string; date?: string }) {
+function initialsFor(name: string): string {
+  return name
+    .replace(/^dr\.?\s*/i, "")
+    .split(/[\s.]+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function AuthorLine({ authorName, date }: { authorName?: string; date?: string }) {
   if (!authorName && !date) return null;
   return (
-    <p className="mt-2 flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
-      {authorName && <span>{authorName}</span>}
-      {authorName && date && <span aria-hidden>·</span>}
-      {date && <span>{formatDateTime(date)}</span>}
-    </p>
+    <div className="mt-3 flex items-center gap-2">
+      {authorName && (
+        <Avatar size="sm">
+          <AvatarFallback className={cn("text-[10px] font-semibold text-white", avatarColorFor(authorName))}>
+            {initialsFor(authorName)}
+          </AvatarFallback>
+        </Avatar>
+      )}
+      <p className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
+        {authorName && <span className="font-medium text-foreground">{authorName}</span>}
+        {date && (
+          <span className="inline-flex items-center gap-1">
+            <Clock size={11} />
+            {formatDateTime(date)}
+          </span>
+        )}
+      </p>
+    </div>
   );
 }
 
-function Tags({ yearLabel, subject }: { yearLabel: string; subject: string }) {
+function CourseTags({ yearLabel, subject }: { yearLabel: string; subject: string }) {
   return (
-    <p className="flex min-w-0 items-center gap-1.5 text-xs font-medium text-primary">
-      <span className="shrink-0">{yearLabel}</span>
-      <span aria-hidden className="text-muted-foreground/50">•</span>
-      <span className="truncate" title={subject}>
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="shrink-0 rounded-full bg-card px-2.5 py-0.5 text-xs font-medium text-foreground ring-1 ring-border">
+        {yearLabel}
+      </span>
+      <span className="truncate text-xs text-muted-foreground" title={subject}>
         {subject}
       </span>
-    </p>
+    </div>
   );
 }
 
-function PanelList({ children }: { children: React.ReactNode }) {
-  return <ul className="divide-y divide-border">{children}</ul>;
+function ItemList({ children }: { children: React.ReactNode }) {
+  return <ul className="flex flex-col gap-2.5">{children}</ul>;
 }
 
-export function AnnouncementList({ items }: { items: ReportAnnouncement[] }) {
+export function AnnouncementList({ items, tone }: { items: ReportAnnouncement[]; tone: ReportTone }) {
   return (
-    <PanelList>
+    <ItemList>
       {items.map((item) => (
-        <li key={item.id} className="flex gap-3 p-4">
+        <li key={item.id} className={cn("flex gap-3 rounded-xl p-3.5", TONE[tone].item)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={item.imageUrl}
-            alt=""
-            className="size-18 shrink-0 rounded-md border border-border object-cover"
-          />
-          <div className="min-w-0">
-            <p className="line-clamp-3 text-sm text-foreground">{item.title}</p>
-            <Byline authorName={item.authorName} date={item.createdAt} />
+          <img src={item.imageUrl} alt="" className="size-16 shrink-0 rounded-lg bg-card object-cover ring-1 ring-border" />
+          <div className="min-w-0 flex-1">
+            <p className="line-clamp-2 text-sm font-semibold text-foreground">{item.title}</p>
+            <AuthorLine authorName={item.authorName} date={item.createdAt} />
           </div>
         </li>
       ))}
-    </PanelList>
+    </ItemList>
   );
 }
 
-export function AcademicList({ items }: { items: ReportAcademicItem[] }) {
+export function AcademicList({ items, tone }: { items: ReportAcademicItem[]; tone: ReportTone }) {
   return (
-    <PanelList>
+    <ItemList>
       {items.map((item) => (
-        <li key={item.id} className="p-4">
-          <Tags yearLabel={item.yearLabel} subject={item.subject} />
+        <li key={item.id} className={cn("rounded-xl p-3.5", TONE[tone].item)}>
+          <CourseTags yearLabel={item.yearLabel} subject={item.subject} />
           <p className="mt-2 truncate text-sm font-semibold text-foreground" title={item.title}>
             {item.title}
           </p>
-          {item.description && <p className="line-clamp-2 text-sm text-foreground/80">{item.description}</p>}
-          <Byline authorName={item.authorName} date={item.createdAt} />
+          {item.description && item.description !== item.title && (
+            <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
+          )}
+          <AuthorLine authorName={item.authorName} date={item.createdAt} />
         </li>
       ))}
-    </PanelList>
+    </ItemList>
   );
 }
 
-const COURSE_TONE: Record<ReportCourse["tone"], string> = {
-  green: "bg-emerald-200 text-emerald-950 dark:bg-emerald-900/60 dark:text-emerald-50",
-  purple: "bg-violet-400 text-violet-950 dark:bg-violet-900/70 dark:text-violet-50",
-};
-
-export function CourseList({ items }: { items: ReportCourse[] }) {
+export function CourseList({ items, tone }: { items: ReportCourse[]; tone: ReportTone }) {
   return (
-    <PanelList>
+    <ItemList>
       {items.map((item) => (
-        <li key={item.id} className="flex gap-3 p-4">
+        <li key={item.id} className={cn("flex gap-3 rounded-xl p-3.5", TONE[tone].item)}>
           <div
             className={cn(
-              "flex h-18 w-28 shrink-0 items-center rounded-md px-2.5 text-xs font-semibold leading-tight",
-              COURSE_TONE[item.tone],
+              "flex h-16 w-28 shrink-0 items-center rounded-lg px-2.5 text-xs font-semibold leading-tight break-words",
+              TONE[tone].tile,
             )}
           >
-            <span className="line-clamp-2">{item.title}</span>
+            <span className="line-clamp-3">{item.title}</span>
           </div>
-          <div className="min-w-0">
-            <Tags yearLabel={item.yearLabel} subject={item.subject} />
-            <p className="mt-1.5 line-clamp-2 text-sm text-foreground">{item.description}</p>
-            <Byline authorName={item.authorName} date={item.publishedAt} />
+          <div className="min-w-0 flex-1">
+            <CourseTags yearLabel={item.yearLabel} subject={item.subject} />
+            <p className="mt-2 line-clamp-2 text-sm text-foreground">{item.description}</p>
+            <AuthorLine authorName={item.authorName} date={item.publishedAt} />
           </div>
         </li>
       ))}
-    </PanelList>
+    </ItemList>
   );
 }
 
-function AttendanceTile({ value, label, className }: { value: number; label: string; className?: string }) {
-  return (
-    <div className={cn("flex flex-col items-center justify-center rounded-xl border border-border py-8", className)}>
-      <span className="text-lg font-semibold">{formatNumber(value)}</span>
-      <span className="text-xs text-muted-foreground">{label}</span>
-    </div>
-  );
-}
-
-export function AttendanceSummary({ attendance }: { attendance: ReportAttendance }) {
-  return (
-    <div className="grid grid-cols-2 gap-3 p-4">
-      <AttendanceTile
-        value={attendance.totalPresent}
-        label="Total Present Today"
-        className="col-span-2 bg-primary/5 text-primary"
-      />
-      <AttendanceTile value={attendance.absent} label="Absent" className="bg-surface-sunken" />
-      <AttendanceTile value={attendance.classesTaken} label="Classes Taken" className="bg-surface-sunken" />
-    </div>
-  );
-}
-
-export function FeedList({ items }: { items: ReportFeed[] }) {
+export function FeedList({ items, tone }: { items: ReportFeed[]; tone: ReportTone }) {
   if (items.length === 0) {
-    return (
-      <div className="p-4">
-        <EmptyState icon={Rss} title="No recent feeds" description="Feed posts from the institution will appear here." />
-      </div>
-    );
+    return <EmptyState title="No recent feeds" description="Class feed posts from the institution will appear here." />;
   }
   return (
-    <PanelList>
+    <ItemList>
       {items.map((item) => (
-        <li key={item.id} className="p-4">
+        <li key={item.id} className={cn("rounded-xl p-3.5", TONE[tone].item)}>
           <p className="line-clamp-3 text-sm text-foreground">{item.body}</p>
-          <Byline authorName={item.authorName} date={item.createdAt} />
+          <AuthorLine authorName={item.authorName} date={item.createdAt} />
         </li>
       ))}
-    </PanelList>
+    </ItemList>
   );
 }
 
-function DeviceStat({ icon: Icon, value, label }: { icon: React.ComponentType<IconProps>; value: number; label: string }) {
-  return (
-    <div className="flex flex-col gap-3 rounded-xl bg-primary/5 p-4">
-      <Icon size={24} weight="fill" className="text-primary" />
-      <div>
-        <p className="text-xl font-semibold text-foreground">{formatNumber(value)}</p>
-        <p className="text-xs text-muted-foreground">{label}</p>
-      </div>
-    </div>
-  );
-}
+const PLATFORM_ICON: Record<ReportDevice["platform"], React.ComponentType<IconProps>> = {
+  iOS: AppleLogo,
+  ANDROID: AndroidLogo,
+};
 
-export function DevicesDashboard({ summary, devices }: { summary: ReportDeviceSummary; devices: ReportDevice[] }) {
+export function DeviceTable({ devices }: { devices: ReportDevice[] }) {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
@@ -196,58 +218,89 @@ export function DevicesDashboard({ summary, devices }: { summary: ReportDeviceSu
   }, [devices, search]);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <DeviceStat icon={AndroidLogo} value={summary.androidFaculty} label="Android Faculty" />
-        <DeviceStat icon={AndroidLogo} value={summary.androidStudent} label="Android Student" />
-        <DeviceStat icon={DeviceMobile} value={summary.iosFaculty} label="iOS Faculty" />
-        <DeviceStat icon={DeviceMobile} value={summary.iosStudent} label="iOS Student" />
-      </div>
-
-      <div className="relative w-full sm:ml-auto sm:max-w-xs">
-        <MagnifyingGlass
-          size={16}
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-        />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search"
-          className="pl-9"
-          aria-label="Search devices"
-        />
+    <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1">
+          <h3 className="text-section-heading">Registered devices</h3>
+          <p className="text-sm text-muted-foreground">
+            {filtered.length} of {devices.length} devices
+          </p>
+        </div>
+        <div className="relative w-full sm:max-w-xs">
+          <MagnifyingGlass
+            size={16}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, platform or model…"
+            className="pl-9"
+            aria-label="Search devices"
+          />
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border">
         <Table>
-          <TableHeader className="bg-surface-sunken">
-            <TableRow>
-              <TableHead className="px-4 font-semibold">Name</TableHead>
-              <TableHead className="px-4 font-semibold">Platform</TableHead>
-              <TableHead className="px-4 font-semibold">Device Model</TableHead>
-              <TableHead className="px-4 font-semibold">User Type</TableHead>
+          <TableHeader className="bg-muted/40">
+            <TableRow className="hover:bg-transparent">
+              {["Name", "Platform", "Device model", "User type"].map((label) => (
+                <TableHead
+                  key={label}
+                  className="px-4 text-[11px] font-medium uppercase tracking-wide text-muted-foreground"
+                >
+                  {label}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 <TableCell colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
                   No devices match “{search}”.
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map((d) => (
-                <TableRow key={d.id}>
-                  <TableCell className="px-4 py-3">{d.name}</TableCell>
-                  <TableCell className="px-4 py-3">{d.platform}</TableCell>
-                  <TableCell className="px-4 py-3">{d.deviceModel}</TableCell>
-                  <TableCell className="px-4 py-3">{d.userType}</TableCell>
-                </TableRow>
-              ))
+              filtered.map((d) => {
+                const PlatformIcon = PLATFORM_ICON[d.platform];
+                return (
+                  <TableRow key={d.id}>
+                    <TableCell className="px-4 py-3">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar size="sm">
+                          <AvatarFallback className={cn("text-[10px] font-semibold text-white", avatarColorFor(d.name))}>
+                            {initialsFor(d.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium text-foreground">{d.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <span className="inline-flex items-center gap-1.5 text-foreground">
+                        <PlatformIcon size={14} weight="fill" className="text-muted-foreground" />
+                        {d.platform === "iOS" ? "iOS" : "Android"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-data px-4 py-3">{d.deviceModel}</TableCell>
+                    <TableCell className="px-4 py-3">
+                      <span
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-xs font-medium",
+                          d.userType === "Student" ? "bg-chart-1/10 text-chart-1" : "bg-brand-accent/10 text-brand-accent",
+                        )}
+                      >
+                        {d.userType}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
       </div>
-    </div>
+    </section>
   );
 }
