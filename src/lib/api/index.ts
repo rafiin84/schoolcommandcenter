@@ -8,3 +8,4 @@ export * from "./notifications";
 export * from "./ai-insights";
 export * from "./announcements";
 export * from "./module-usage";
+export * from "./reports";

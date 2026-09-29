@@ -10,10 +10,10 @@ export const NAV_ITEMS = [
   { href: "/overview", label: "Overview", icon: "Gauge" },
   { href: "/announcements", label: "Announcements", icon: "Megaphone" },
   { href: "/education-map", label: "Education Map", icon: "MapTrifold" },
-  { href: "/alerts", label: "Alerts & Exceptions", icon: "Warning" },
   { href: "/zoho-access", label: "Zoho Classes Access", icon: "SignIn" },
   { href: "/course-template", label: "Course Template", icon: "SquaresFour" },
   { href: "/directory", label: "Directory", icon: "AddressBook" },
+  { href: "/reports", label: "Reports", icon: "ChartBar" },
 ] as const;
 
 export const PRIORITY_LABEL: Record<Priority, string> = {
