@@ -43,14 +43,26 @@ const PLATFORM_LEGEND = [
 ];
 
 // Same icon + tone per module as the count tiles above.
-const MODULE_ICON: Record<ReportModuleKey, { icon: React.ComponentType<IconProps>; chip: string }> = {
-  announcements: { icon: Megaphone, chip: "bg-primary/15 text-primary" },
-  courses: { icon: BookOpen, chip: "bg-chart-3/15 text-chart-3" },
-  assignments: { icon: ClipboardText, chip: "bg-chart-2/15 text-chart-2" },
-  exams: { icon: Certificate, chip: "bg-status-critical/15 text-status-critical" },
-  questionPapers: { icon: FilePdf, chip: "bg-brand-accent/15 text-brand-accent" },
-  feeds: { icon: ChatCircleText, chip: "bg-chart-1/15 text-chart-1" },
+// Each module keeps one hue across its tile, icon chip and chart. Status red is
+// reserved for alerts, so exams use pink rather than red.
+const MODULE_ICON: Record<ReportModuleKey, { icon: React.ComponentType<IconProps>; chip: string; color: string }> = {
+  announcements: { icon: Megaphone, chip: "bg-primary/15 text-primary", color: "var(--primary)" },
+  courses: { icon: BookOpen, chip: "bg-chart-3/15 text-chart-3", color: "var(--chart-3)" },
+  assignments: { icon: ClipboardText, chip: "bg-chart-2/15 text-chart-2", color: "var(--chart-2)" },
+  exams: { icon: Certificate, chip: "bg-chart-5/15 text-chart-5", color: "var(--chart-5)" },
+  questionPapers: { icon: FilePdf, chip: "bg-chart-4/15 text-chart-4", color: "var(--chart-4)" },
+  feeds: { icon: ChatCircleText, chip: "bg-chart-1/15 text-chart-1", color: "var(--chart-1)" },
 };
+
+// The combined series isn't any one module, so it wears the neutral ink.
+const ALL_MODULES_COLOR = "var(--muted-foreground)";
+
+// Academic years are ordered, so they get one hue stepping darker per year
+// instead of borrowing a module's colour.
+function yearRamp(index: number, count: number): string {
+  const strength = count <= 1 ? 100 : 40 + (60 * index) / (count - 1);
+  return `color-mix(in oklab, var(--primary) ${Math.round(strength)}%, var(--card))`;
+}
 
 const PERIOD_COLUMN: Record<ReportPeriod, string> = { week: "Week", month: "Month", year: "Year" };
 
@@ -110,17 +122,17 @@ export default function ReportsPage() {
             { label: "Announcements", value: formatNumber(data.announcements.length), helpText: "Announcements posted", icon: Megaphone, tone: "navy" },
             { label: "Courses", value: formatNumber(data.courses.length), helpText: "Courses published", icon: BookOpen, tone: "green" },
             { label: "Assignments", value: formatNumber(data.assignments.length), helpText: "Assignments created", icon: ClipboardText, tone: "orange" },
-            { label: "Exams", value: formatNumber(data.exams.length), helpText: "Exams conducted", icon: Certificate, tone: "red" },
-            { label: "Question papers", value: formatNumber(data.questionPapers.length), helpText: "Question papers uploaded", icon: FilePdf, tone: "teal" },
+            { label: "Exams", value: formatNumber(data.exams.length), helpText: "Exams conducted", icon: Certificate, tone: "pink" },
+            { label: "Question papers", value: formatNumber(data.questionPapers.length), helpText: "Question papers uploaded", icon: FilePdf, tone: "amber" },
             { label: "Feeds", value: formatNumber(data.feeds.length), helpText: "Class feed posts", icon: ChatCircleText, tone: "blue" },
             {
               label: "Present today",
               value: formatNumber(data.attendance.totalPresent),
               helpText: `${data.attendance.absent} absent · ${data.attendance.classesTaken} classes taken`,
               icon: UsersThree,
-              tone: "amber",
+              tone: "teal",
             },
-            { label: "Registered devices", value: formatNumber(metrics.totalDevices), helpText: "Android and iOS installs", icon: DeviceMobile, tone: "pink" },
+            { label: "Registered devices", value: formatNumber(metrics.totalDevices), helpText: "Android and iOS installs", icon: DeviceMobile, tone: "navy" },
           ]}
         />
       </section>
@@ -138,10 +150,10 @@ export default function ReportsPage() {
             table={{ columns: [PERIOD_COLUMN[period], "Items"], rows: trends.combined }}
             className="sm:col-span-2 xl:col-span-3"
           >
-            <AreaChart data={trends.combined} unit="items" />
+            <AreaChart data={trends.combined} color={ALL_MODULES_COLOR} unit="items" />
           </ChartCard>
           {trends.modules.map((module) => {
-            const { icon: Icon, chip } = MODULE_ICON[module.key];
+            const { icon: Icon, chip, color } = MODULE_ICON[module.key];
             return (
               <ChartCard
                 key={module.key}
@@ -154,7 +166,7 @@ export default function ReportsPage() {
                 }
                 table={{ columns: [PERIOD_COLUMN[period], "Items"], rows: module.points }}
               >
-                <ColumnChart data={module.points} unit="items" width={360} height={180} compact />
+                <ColumnChart data={module.points} color={color} unit="items" width={360} height={180} compact />
               </ChartCard>
             );
           })}
@@ -167,7 +179,10 @@ export default function ReportsPage() {
           description="Courses, assignments, exams and question papers per year."
           table={{ columns: ["Year", "Items"], rows: metrics.byYear }}
         >
-          <BarChart data={metrics.byYear} unit="items" />
+          <BarChart
+            data={metrics.byYear.map((d, i, all) => ({ ...d, color: yearRamp(i, all.length) }))}
+            unit="items"
+          />
         </ChartCard>
 
         <ChartCard

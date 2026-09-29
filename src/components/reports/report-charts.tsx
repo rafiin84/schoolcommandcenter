@@ -10,6 +10,15 @@ import type { ChartDatum } from "./report-metrics";
 
 const DEFAULT_COLOR = "var(--primary)";
 
+/**
+ * Soft tint of a series colour, mixed toward the card surface. Marks rest at this
+ * light tint and step up to the full colour on hover/focus. Values stay readable
+ * without the colour: every mark is direct-labelled and every chart has a table view.
+ */
+export function tint(color: string, strength = 45): string {
+  return `color-mix(in oklab, ${color} ${strength}%, var(--card))`;
+}
+
 /** Rounds the axis top up to a clean 1 / 2 / 5 step so ticks read as whole numbers. */
 function niceScale(max: number, target = 4): { top: number; ticks: number[] } {
   if (max <= 0) return { top: 1, ticks: [0, 1] };
@@ -65,7 +74,7 @@ export function ChartLegend({ items }: { items: { label: string; color: string }
           key={item.label}
           className="flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground"
         >
-          <span className="size-2 rounded-sm" style={{ backgroundColor: item.color }} aria-hidden />
+          <span className="size-2 rounded-sm" style={{ backgroundColor: tint(item.color) }} aria-hidden />
           {item.label}
         </span>
       ))}
@@ -201,9 +210,8 @@ export function ColumnChart({
               {h > 0 && (
                 <path
                   d={columnPath(cx - barW / 2, y(d.value), barW, h)}
-                  fill={color}
-                  opacity={active === null || active === i ? 1 : 0.45}
-                  className="transition-opacity"
+                  style={{ fill: active === i ? color : tint(color) }}
+                  className="transition-[fill]"
                 />
               )}
               {(!compact || d.value > 0) && (
@@ -272,8 +280,7 @@ export function BarChart({ data, unit }: { data: ChartDatum[]; unit: string }) {
               className="relative h-3 rounded-r-[4px] transition-opacity"
               style={{
                 width: `${(d.value / top) * 100}%`,
-                backgroundColor: d.color ?? DEFAULT_COLOR,
-                opacity: active === null || active === i ? 1 : 0.45,
+                backgroundColor: active === i ? (d.color ?? DEFAULT_COLOR) : tint(d.color ?? DEFAULT_COLOR),
               }}
             />
             <span className="relative ml-2 text-xs font-semibold text-foreground">{formatNumber(d.value)}</span>
@@ -327,11 +334,10 @@ export function DonutChart({ data, centerLabel }: { data: ChartDatum[]; centerLa
               cy={size / 2}
               r={r}
               fill="none"
-              stroke={s.color ?? DEFAULT_COLOR}
+              style={{ stroke: active === i ? (s.color ?? DEFAULT_COLOR) : tint(s.color ?? DEFAULT_COLOR) }}
               strokeWidth={active === i ? stroke + 6 : stroke}
               strokeDasharray={`${Math.max(s.length - gap, 0)} ${circumference}`}
               strokeDashoffset={-s.offset}
-              opacity={active === null || active === i ? 1 : 0.45}
               tabIndex={0}
               aria-label={`${s.label}: ${s.value}`}
               className="cursor-pointer outline-none transition-all"
@@ -360,7 +366,7 @@ export function DonutChart({ data, centerLabel }: { data: ChartDatum[]; centerLa
             onPointerEnter={() => setActive(i)}
             onPointerLeave={() => setActive(null)}
           >
-            <span className="size-3 rounded-sm" style={{ backgroundColor: d.color ?? DEFAULT_COLOR }} aria-hidden />
+            <span className="size-3 rounded-sm" style={{ backgroundColor: tint(d.color ?? DEFAULT_COLOR) }} aria-hidden />
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{d.label}</p>
               <p className="text-lg font-semibold text-foreground">{formatNumber(d.value)}</p>
@@ -422,8 +428,8 @@ export function AreaChart({ data, unit, color = DEFAULT_COLOR }: { data: ChartDa
       >
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.18} />
-            <stop offset="100%" stopColor={color} stopOpacity={0.02} />
+            <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.14 }} />
+            <stop offset="100%" style={{ stopColor: color, stopOpacity: 0.02 }} />
           </linearGradient>
         </defs>
         {ticks.map((t) => (
@@ -435,7 +441,7 @@ export function AreaChart({ data, unit, color = DEFAULT_COLOR }: { data: ChartDa
           </g>
         ))}
         <path d={area} fill={`url(#${gradientId})`} />
-        <path d={line} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d={line} fill="none" style={{ stroke: tint(color, 70) }} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
         {active !== null && (
           <>
             <line x1={x(active)} x2={x(active)} y1={AREA.top} y2={y(0)} stroke="var(--muted-foreground)" strokeWidth={1} />
