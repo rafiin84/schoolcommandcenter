@@ -91,7 +91,7 @@ export function DirectoryAccountCard({ account }: { account: DirectorySchoolAcco
 
       <Button
         size="sm"
-        variant={account.status === "suspended" ? "outline" : "default"}
+        variant="secondary"
         className="w-full gap-2"
         onClick={() => setConfirmOpen(true)}
       >
@@ -124,7 +124,7 @@ export function DirectoryAccountRow({ account }: { account: DirectorySchoolAccou
         <StatusIcon size={14} weight="fill" />
         {status.label}
       </span>
-      <Button size="sm" variant={account.status === "suspended" ? "outline" : "default"} className="gap-2" onClick={() => setConfirmOpen(true)}>
+      <Button size="sm" variant="secondary" className="gap-2" onClick={() => setConfirmOpen(true)}>
         Open Zoho Classes
         <ArrowSquareOut size={14} />
       </Button>
