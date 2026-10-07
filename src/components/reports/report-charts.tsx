@@ -3,7 +3,6 @@
 import { useId, useState } from "react";
 import { Table } from "@phosphor-icons/react/dist/ssr";
 import { Button } from "@/components/ui/button";
-import { SectionHeader } from "@/components/layout/section-header";
 import { formatNumber, formatPercent } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import type { ChartDatum } from "./report-metrics";
@@ -15,7 +14,7 @@ const DEFAULT_COLOR = "var(--primary)";
  * light tint and step up to the full colour on hover/focus. Values stay readable
  * without the colour: every mark is direct-labelled and every chart has a table view.
  */
-export function tint(color: string, strength = 45): string {
+export function tint(color: string, strength = 100): string {
   return `color-mix(in oklab, ${color} ${strength}%, var(--card))`;
 }
 
@@ -82,21 +81,28 @@ export function ChartLegend({ items }: { items: { label: string; color: string }
   );
 }
 
-/** Card shell shared by every chart: heading, optional legend, and a table-view twin. */
+/** Card shell shared by every chart, laid out like the Zoho Classes dashboard cards. */
 export function ChartCard({
   title,
   description,
+  value,
   legend,
-  icon,
+  action,
   table,
   children,
   className,
+  color,
 }: {
   title: string;
+  /** Module hue: tints the card background lightly. */
+  color?: string;
+  /** Caption under the headline number (or the only subtitle when no value is given). */
   description?: string;
+  /** Headline number shown above the chart. */
+  value?: string;
   legend?: React.ReactNode;
-  /** Optional icon chip shown beside the table toggle. */
-  icon?: React.ReactNode;
+  /** Control shown at the right of the header, e.g. the period select. */
+  action?: React.ReactNode;
   table: { columns: [string, string]; rows: ChartDatum[] };
   children: React.ReactNode;
   className?: string;
@@ -104,50 +110,59 @@ export function ChartCard({
   const [showTable, setShowTable] = useState(false);
 
   return (
-    <section className={cn("flex flex-col rounded-lg border border-border bg-card p-4 sm:p-6", className)}>
-      <SectionHeader
-        title={title}
-        description={description}
-        actions={
-          <>
-            {icon}
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5"
-              onClick={() => setShowTable((v) => !v)}
-              aria-pressed={showTable}
-            >
-              <Table size={14} />
-              {showTable ? "View chart" : "View table"}
-            </Button>
-          </>
-        }
-      />
-      {legend && !showTable && <div className="mb-3">{legend}</div>}
-      <div className="flex flex-1 flex-col justify-center">
-        {showTable ? (
-          <div className="overflow-x-auto rounded-xl border border-border">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-muted/60 text-xs uppercase text-muted-foreground">
-                <tr>
-                  <th scope="col" className="px-3 py-2 font-medium">{table.columns[0]}</th>
-                  <th scope="col" className="px-3 py-2 text-right font-medium">{table.columns[1]}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {table.rows.map((row) => (
-                  <tr key={row.label} className="border-t border-border">
-                    <td className="px-3 py-2">{row.label}</td>
-                    <td className="text-data px-3 py-2 text-right">{formatNumber(row.value)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <section
+      className={cn("flex flex-col overflow-hidden rounded-lg border border-border", !color && "bg-accent/50", className)}
+      style={color ? { backgroundColor: `color-mix(in oklab, ${color} 8%, var(--card))` } : undefined}
+    >
+      <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-3.5">
+        <h2 className="min-w-0 truncate text-base font-semibold text-foreground">{title}</h2>
+        <div className="flex shrink-0 items-center gap-2">
+          {action}
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => setShowTable((v) => !v)}
+            aria-pressed={showTable}
+            aria-label={showTable ? "View chart" : "View table"}
+            title={showTable ? "View chart" : "View table"}
+            className="bg-card"
+          >
+            <Table size={14} />
+          </Button>
+        </div>
+      </header>
+      <div className="flex flex-1 flex-col px-5 py-4">
+        {(value !== undefined || description) && (
+          <div className="mb-3">
+            {value !== undefined && <p className="text-2xl font-semibold tabular-nums text-foreground">{value}</p>}
+            {description && <p className="text-sm text-muted-foreground">{description}</p>}
           </div>
-        ) : (
-          children
         )}
+        {legend && !showTable && <div className="mb-3">{legend}</div>}
+        <div className="flex flex-1 flex-col justify-center">
+          {showTable ? (
+            <div className="overflow-x-auto rounded-lg border border-border bg-card">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-muted/60 text-xs uppercase text-muted-foreground">
+                  <tr>
+                    <th scope="col" className="px-3 py-2 font-medium">{table.columns[0]}</th>
+                    <th scope="col" className="px-3 py-2 text-right font-medium">{table.columns[1]}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((row) => (
+                    <tr key={row.label} className="border-t border-border">
+                      <td className="px-3 py-2">{row.label}</td>
+                      <td className="text-data px-3 py-2 text-right">{formatNumber(row.value)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            children
+          )}
+        </div>
       </div>
     </section>
   );
@@ -177,7 +192,7 @@ export function ColumnChart({
   const innerW = COL.width - COL.left - COL.right;
   const innerH = COL.height - COL.top - COL.bottom;
   const band = innerW / data.length;
-  const barW = Math.min(24, band * 0.5);
+  const barW = Math.min(32, band * 0.5);
   const labelEvery = compact ? Math.ceil(data.length / 6) : 1;
   const y = (v: number) => COL.top + innerH - (v / top) * innerH;
 
@@ -196,7 +211,7 @@ export function ColumnChart({
       <svg viewBox={`0 0 ${COL.width} ${COL.height}`} className="w-full" role="img" aria-label={`Column chart of ${unit} by category`}>
         {ticks.map((t) => (
           <g key={t}>
-            <line x1={COL.left} x2={COL.width - COL.right} y1={y(t)} y2={y(t)} stroke="var(--border)" strokeWidth={1} />
+            <line x1={COL.left} x2={COL.width - COL.right} y1={y(t)} y2={y(t)} stroke="var(--border)" strokeOpacity={0.7} strokeWidth={1} />
             <text x={COL.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" className="fill-muted-foreground text-[11px] tabular-nums">
               {t}
             </text>
@@ -213,11 +228,6 @@ export function ColumnChart({
                   style={{ fill: active === i ? color : tint(color) }}
                   className="transition-[fill]"
                 />
-              )}
-              {(!compact || d.value > 0) && (
-                <text x={cx} y={y(d.value) - 6} textAnchor="middle" className="fill-foreground text-[13px] font-semibold">
-                  {d.value}
-                </text>
               )}
               {(data.length - 1 - i) % labelEvery === 0 && (
                 <text x={cx} y={COL.height - 10} textAnchor="middle" className="fill-muted-foreground text-[11px]">
@@ -441,7 +451,7 @@ export function AreaChart({ data, unit, color = DEFAULT_COLOR }: { data: ChartDa
           </g>
         ))}
         <path d={area} fill={`url(#${gradientId})`} />
-        <path d={line} fill="none" style={{ stroke: tint(color, 70) }} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d={line} fill="none" style={{ stroke: tint(color) }} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
         {active !== null && (
           <>
             <line x1={x(active)} x2={x(active)} y1={AREA.top} y2={y(0)} stroke="var(--muted-foreground)" strokeWidth={1} />

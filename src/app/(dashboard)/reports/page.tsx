@@ -11,7 +11,6 @@ import {
   Megaphone,
   UsersThree,
 } from "@phosphor-icons/react/dist/ssr";
-import type { IconProps } from "@phosphor-icons/react";
 import { ContentContainer } from "@/components/layout/content-container";
 import { SectionHeader } from "@/components/layout/section-header";
 import { KpiGrid } from "@/components/dashboard/kpi-grid";
@@ -35,7 +34,6 @@ import { ErrorState } from "@/components/shared/error-state";
 import { ChartSkeleton, KpiGridSkeleton } from "@/components/shared/skeletons";
 import { useReports } from "@/hooks/use-reports";
 import { formatNumber } from "@/lib/formatters";
-import { cn } from "@/lib/utils";
 
 const PLATFORM_LEGEND = [
   { label: "Android", color: PLATFORM_COLOR.Android },
@@ -45,17 +43,19 @@ const PLATFORM_LEGEND = [
 // Same icon + tone per module as the count tiles above.
 // Each module keeps one hue across its tile, icon chip and chart. Status red is
 // reserved for alerts, so exams use pink rather than red.
-const MODULE_ICON: Record<ReportModuleKey, { icon: React.ComponentType<IconProps>; chip: string; color: string }> = {
-  announcements: { icon: Megaphone, chip: "bg-primary/15 text-primary", color: "var(--primary)" },
-  courses: { icon: BookOpen, chip: "bg-chart-3/15 text-chart-3", color: "var(--chart-3)" },
-  assignments: { icon: ClipboardText, chip: "bg-chart-2/15 text-chart-2", color: "var(--chart-2)" },
-  exams: { icon: Certificate, chip: "bg-chart-5/15 text-chart-5", color: "var(--chart-5)" },
-  questionPapers: { icon: FilePdf, chip: "bg-chart-4/15 text-chart-4", color: "var(--chart-4)" },
-  feeds: { icon: ChatCircleText, chip: "bg-chart-1/15 text-chart-1", color: "var(--chart-1)" },
+const MODULE_ORDER: ReportModuleKey[] = ["announcements", "courses", "assignments", "exams", "questionPapers", "feeds"];
+
+const MODULE_COLOR: Record<ReportModuleKey, string> = {
+  announcements: "var(--primary)",
+  courses: "var(--primary)",
+  assignments: "var(--primary)",
+  exams: "var(--primary)",
+  questionPapers: "var(--primary)",
+  feeds: "var(--primary)",
 };
 
 // The combined series isn't any one module, so it wears the neutral ink.
-const ALL_MODULES_COLOR = "var(--muted-foreground)";
+const ALL_MODULES_COLOR = "var(--primary)";
 
 // Academic years are ordered, so they get one hue stepping darker per year
 // instead of borrowing a module's colour.
@@ -66,33 +66,56 @@ function yearRamp(index: number, count: number): string {
 
 const PERIOD_COLUMN: Record<ReportPeriod, string> = { week: "Week", month: "Month", year: "Year" };
 
-function PeriodToggle({ value, onChange }: { value: ReportPeriod; onChange: (period: ReportPeriod) => void }) {
+function PeriodSelect({ value, onChange }: { value: ReportPeriod; onChange: (period: ReportPeriod) => void }) {
   return (
-    <div className="flex rounded-full border border-border p-0.5" role="group" aria-label="Report period">
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as ReportPeriod)}
+      aria-label="Report period"
+      className="h-8 rounded-lg border border-border bg-card px-2.5 text-sm text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+    >
       {PERIOD_OPTIONS.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          onClick={() => onChange(option.value)}
-          aria-pressed={value === option.value}
-          className={cn(
-            "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-            value === option.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-          )}
-        >
+        <option key={option.value} value={option.value}>
           {option.label}
-        </button>
+        </option>
       ))}
-    </div>
+    </select>
+  );
+}
+
+type ReportData = NonNullable<ReturnType<typeof useReports>["data"]>["data"];
+
+// Each card owns its period, like the Zoho Classes dashboard cards.
+function TrendCard({ data, moduleKey }: { data: ReportData; moduleKey: ReportModuleKey | "all" }) {
+  const [period, setPeriod] = useState<ReportPeriod>("month");
+  const trends = useMemo(() => buildModuleTrends(data, period), [data, period]);
+  const item = moduleKey === "all" ? null : trends.modules.find((m) => m.key === moduleKey);
+  const points = item ? item.points : trends.combined;
+  const total = item ? item.total : trends.combined.reduce((sum, p) => sum + p.value, 0);
+  const label = item ? item.label : "All modules";
+
+  return (
+    <ChartCard
+      title={label}
+      value={formatNumber(total)}
+      description={item ? `${label} in ${trends.rangeLabel}` : `Items published, ${trends.rangeLabel}`}
+      action={<PeriodSelect value={period} onChange={setPeriod} />}
+      table={{ columns: [PERIOD_COLUMN[period], "Items"], rows: points }}
+      className={item ? undefined : "lg:col-span-2"}
+    >
+      {item ? (
+        <ColumnChart data={points} color={MODULE_COLOR[item.key]} unit="items" width={520} height={240} compact />
+      ) : (
+        <AreaChart data={points} color={ALL_MODULES_COLOR} unit="items" />
+      )}
+    </ChartCard>
   );
 }
 
 export default function ReportsPage() {
   const reports = useReports();
-  const [period, setPeriod] = useState<ReportPeriod>("month");
   const data = reports.data?.data;
   const metrics = useMemo(() => (data ? buildReportMetrics(data) : null), [data]);
-  const trends = useMemo(() => (data ? buildModuleTrends(data, period) : null), [data, period]);
 
   if (reports.isLoading) {
     return (
@@ -106,7 +129,7 @@ export default function ReportsPage() {
     );
   }
 
-  if (reports.isError || !data || !metrics || !trends) {
+  if (reports.isError || !data || !metrics) {
     return (
       <ContentContainer>
         <ErrorState onRetry={() => reports.refetch()} />
@@ -116,7 +139,8 @@ export default function ReportsPage() {
 
   return (
     <ContentContainer>
-      <section aria-label="Feature counts" className="mb-6">
+      <h1 className="mb-6 text-2xl font-semibold text-foreground">Reports Dashboard</h1>
+      <section aria-label="Feature counts" className="mb-8">
         <KpiGrid
           cards={[
             { label: "Announcements", value: formatNumber(data.announcements.length), helpText: "Announcements posted", icon: Megaphone, tone: "navy" },
@@ -137,39 +161,13 @@ export default function ReportsPage() {
         />
       </section>
 
-        <section aria-label="Content over time" className="mb-6">
-        <SectionHeader
-          title="Content by module"
-          description={`Items published per ${PERIOD_COLUMN[period].toLowerCase()}, ${trends.rangeLabel}.`}
-          actions={<PeriodToggle value={period} onChange={setPeriod} />}
-        />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          <ChartCard
-            title="All modules"
-            description={`${formatNumber(trends.combined.reduce((sum, p) => sum + p.value, 0))} items in the ${trends.rangeLabel.startsWith("last") ? trends.rangeLabel : `years ${trends.rangeLabel}`}`}
-            table={{ columns: [PERIOD_COLUMN[period], "Items"], rows: trends.combined }}
-            className="sm:col-span-2 xl:col-span-3"
-          >
-            <AreaChart data={trends.combined} color={ALL_MODULES_COLOR} unit="items" />
-          </ChartCard>
-          {trends.modules.map((module) => {
-            const { icon: Icon, chip, color } = MODULE_ICON[module.key];
-            return (
-              <ChartCard
-                key={module.key}
-                title={module.label}
-                description={`${formatNumber(module.total)} in this period`}
-                icon={
-                  <span className={cn("flex size-8 items-center justify-center rounded-lg", chip)}>
-                    <Icon size={16} />
-                  </span>
-                }
-                table={{ columns: [PERIOD_COLUMN[period], "Items"], rows: module.points }}
-              >
-                <ColumnChart data={module.points} color={color} unit="items" width={360} height={180} compact />
-              </ChartCard>
-            );
-          })}
+      <section aria-label="Content over time" className="mb-6">
+        <SectionHeader title="Content statistics" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <TrendCard data={data} moduleKey="all" />
+          {MODULE_ORDER.map((key) => (
+            <TrendCard key={key} data={data} moduleKey={key} />
+          ))}
         </div>
       </section>
 
