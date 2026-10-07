@@ -14,7 +14,7 @@ export function SectionHeader({
   return (
     <div className={cn("flex items-end justify-between gap-3 pb-3", className)}>
       <div className="space-y-1">
-        <h2 className="text-2xl lowercase leading-tight text-foreground">
+        <h2 className="text-lg lowercase leading-tight text-foreground">
           {title.includes(" ") ? (
             <>
               <span className="font-normal">{title.slice(0, title.lastIndexOf(" "))} </span>
