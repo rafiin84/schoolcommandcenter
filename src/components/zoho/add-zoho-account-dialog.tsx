@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft, Buildings, DownloadSimple, Plus, UploadSimple, UserPlus } from "@phosphor-icons/react/dist/ssr";
 import type { DirectorySchoolAccount } from "@/types";
 import {
   Dialog,
@@ -33,7 +34,32 @@ type AddAccountValues = z.infer<typeof addAccountSchema>;
 let manualAccountCounter = 0;
 
 export function AddZohoAccountDialog({ allAccounts }: { allAccounts: DirectorySchoolAccount[] }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
+  const [step, setStep] = useState<"choose" | "create">("choose");
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  function setOpen(next: boolean) {
+    setOpenState(next);
+    if (!next) setStep("choose");
+  }
+
+  function downloadSample() {
+    const csv = "District,Block,Access Token\nChennai,Block 1,paste-token-here\n";
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "zoho-classes-accounts-sample.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function onImportPicked(file: File | undefined) {
+    if (!file) return;
+    toast.success("Import simulated", {
+      description: `${file.name} would be validated and imported in a connected environment.`,
+    });
+    setOpen(false);
+  }
   const addAccount = useZohoDirectoryStore((s) => s.addAccount);
 
   const {
@@ -105,9 +131,63 @@ export function AddZohoAccountDialog({ allAccounts }: { allAccounts: DirectorySc
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={step === "choose" ? "gap-0 p-0 sm:max-w-2xl" : "sm:max-w-md"}>
+        {step === "choose" ? (
+          <div className="flex flex-col items-center px-6 pt-10 pb-6 sm:px-10">
+            <DialogHeader className="items-center text-center">
+              <span className="mb-4 flex size-16 items-center justify-center rounded-full bg-accent text-primary">
+                <Buildings size={30} weight="fill" />
+              </span>
+              <DialogTitle className="text-lg font-semibold">Add or import Zoho Classes accounts.</DialogTitle>
+              <DialogDescription className="sr-only">Create one account or import many at once.</DialogDescription>
+            </DialogHeader>
+
+            <div className="mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+              {[
+                { key: "create", icon: UserPlus, title: "Create Account", text: "Link accounts manually, one at a time", onClick: () => setStep("create") },
+                { key: "import", icon: UploadSimple, title: "Import Accounts", text: "Efficiently add multiple accounts at once", onClick: () => fileInput.current?.click() },
+              ].map(({ key, icon: Icon, title, text, onClick }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={onClick}
+                  className="group flex flex-col items-start gap-3 rounded-lg border border-border bg-card p-5 text-left transition-colors hover:border-primary hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Icon size={22} className="text-muted-foreground/50 transition-colors group-hover:text-primary" />
+                  <span className="mt-2 text-sm font-medium text-foreground">{title}</span>
+                  <span className="text-sm text-muted-foreground">{text}</span>
+                </button>
+              ))}
+            </div>
+            <input
+              ref={fileInput}
+              type="file"
+              accept=".csv,.xls,.xlsx"
+              className="hidden"
+              onChange={(e) => onImportPicked(e.target.files?.[0])}
+            />
+
+            <button
+              type="button"
+              onClick={downloadSample}
+              className="mt-8 flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              <DownloadSimple size={18} />
+              Download Sample Excel
+            </button>
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              <span className="text-destructive">*</span> District, Block and Access token are mandatory fields for importing account data.
+            </p>
+          </div>
+        ) : (
+        <>
         <DialogHeader>
-          <DialogTitle>Add Zoho Classes account</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <button type="button" onClick={() => setStep("choose")} aria-label="Back" className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-primary">
+              <ArrowLeft size={16} />
+            </button>
+            Create Zoho Classes account
+          </DialogTitle>
           <DialogDescription>
             Link a Zoho Classes account to a district and block by entering its access token.
           </DialogDescription>
@@ -186,6 +266,8 @@ export function AddZohoAccountDialog({ allAccounts }: { allAccounts: DirectorySc
             </Button>
           </DialogFooter>
         </form>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   );
