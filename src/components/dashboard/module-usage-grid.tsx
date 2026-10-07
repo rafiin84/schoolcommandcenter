@@ -25,13 +25,13 @@ const MODULE_ICON: Record<string, React.ComponentType<IconProps>> = {
 
 export function ModuleUsageGrid({ stats }: { stats: ModuleUsageStat[] }) {
   return (
-    <div className="flex gap-3 overflow-x-auto pb-1">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
       {stats.map((stat) => {
         const Icon = MODULE_ICON[stat.id] ?? BookOpen;
         return (
           <div
             key={stat.id}
-            className="flex w-36 shrink-0 flex-col gap-2 rounded-lg bg-accent p-4"
+            className="flex min-h-36 flex-col gap-2 rounded-lg bg-accent p-5"
           >
             <Icon size={22} weight="fill" className="text-primary" />
             <div className="mt-3 space-y-0.5">
