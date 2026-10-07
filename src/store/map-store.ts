@@ -19,6 +19,7 @@ interface MapStoreState {
   togglePriority: (priority: Priority) => void;
   toggleOnboardingStatus: (status: OnboardingStatus) => void;
   setEngagementRange: (min: number | null, max: number | null) => void;
+  setFilters: (filters: Partial<MapFilterState>) => void;
   resetFilters: () => void;
 }
 
@@ -63,5 +64,6 @@ export const useMapStore = create<MapStoreState>((set) => ({
     }),
   setEngagementRange: (min, max) =>
     set((state) => ({ filters: { ...state.filters, minEngagement: min, maxEngagement: max } })),
+  setFilters: (partial) => set((state) => ({ filters: { ...state.filters, ...partial } })),
   resetFilters: () => set({ filters: defaultFilters }),
 }));

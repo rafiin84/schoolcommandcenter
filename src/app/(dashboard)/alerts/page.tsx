@@ -5,15 +5,14 @@ import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { ContentContainer } from "@/components/layout/content-container";
-import { AlertFilters, type AlertFilterState } from "@/components/alerts/alert-filters";
+import { AlertFilterDialog, type AlertFilterState } from "@/components/alerts/alert-filters";
 import { AlertCard } from "@/components/alerts/alert-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { SearchInput } from "@/components/shared/search-input";
+import { SortMenu, SortTimeIcon } from "@/components/shared/sort-menu";
 import { useAlerts } from "@/hooks/use-alerts";
 import { useEducationMapData } from "@/hooks/use-map";
 import type { AlertException } from "@/types";
@@ -33,7 +32,6 @@ function AlertsContent() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const activeFilterCount =
-    (filters.search ? 1 : 0) +
     filters.priority.length +
     filters.status.length +
     filters.category.length +
@@ -84,16 +82,34 @@ function AlertsContent() {
 
   return (
     <ContentContainer className="pt-3">
-      <div className="mb-4 flex items-center justify-end">
-        <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
-          Filter
-          <SortIcon size={18} />
-          {activeFilterCount > 0 && (
-            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-              {activeFilterCount}
-            </span>
-          )}
-        </Button>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <SearchInput
+          value={filters.search}
+          onChange={(search) => setFilters({ ...filters, search })}
+          placeholder="Search alerts"
+          ariaLabel="Search alerts"
+          className="w-80"
+        />
+        <div className="ml-auto flex items-center gap-3">
+          <Button variant="outline" className="gap-2" onClick={() => setFiltersOpen(true)}>
+            Filter
+            <SortIcon size={18} />
+            {activeFilterCount > 0 && (
+              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                {activeFilterCount}
+              </span>
+            )}
+          </Button>
+          <SortMenu
+            value={filters.sortBy}
+            onChange={(sortBy) => setFilters({ ...filters, sortBy })}
+            options={[
+              { value: "priority", label: "Priority" },
+              { value: "age", label: "Age", icon: SortTimeIcon },
+              { value: "variance", label: "Target variance" },
+            ]}
+          />
+        </div>
       </div>
 
       <div className="mb-4 grid grid-cols-3 gap-3">
@@ -111,22 +127,14 @@ function AlertsContent() {
         </div>
       </div>
 
-      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
-        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-md">
-          <SheetHeader className="border-b border-border px-5 py-5">
-            <SheetTitle>Filters</SheetTitle>
-          </SheetHeader>
-          <div className="flex flex-col gap-4 p-5">
-            <AlertFilters value={filters} onChange={setFilters} />
-            <div className="flex items-center gap-2 border-t border-border pt-4">
-              <Switch id="group-toggle" checked={groupByGeography} onCheckedChange={setGroupByGeography} />
-              <Label htmlFor="group-toggle" className="text-sm text-muted-foreground">
-                Group by district
-              </Label>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <AlertFilterDialog
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        value={filters}
+        onChange={setFilters}
+        groupByDistrict={groupByGeography}
+        onGroupChange={setGroupByGeography}
+      />
 
       {alerts.isLoading ? (
         <ListSkeleton count={6} />

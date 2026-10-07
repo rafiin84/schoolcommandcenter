@@ -1,16 +1,22 @@
 "use client";
 
-import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import {
+  ArrowDown,
+  Bell,
+  CheckCircle,
+  Eye,
+  Gear,
+  Headset,
+  MapPin,
+  MinusCircle,
+  Rocket,
+  TrendUp,
+  Warning,
+  WarningOctagon,
+} from "@phosphor-icons/react/dist/ssr";
 import type { AlertCategory, AlertStatus, Priority } from "@/types";
 import { ALERT_CATEGORY_LABEL, PRIORITY_LABEL } from "@/lib/constants";
-import { Input } from "@/components/ui/input";
-import { SortMenu, SortTimeIcon } from "@/components/shared/sort-menu";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-const PRIORITY_OPTIONS: Priority[] = ["critical", "high", "medium", "low"];
-const STATUS_OPTIONS: AlertStatus[] = ["open", "acknowledged", "resolved"];
-const CATEGORY_OPTIONS: AlertCategory[] = ["deployment", "engagement", "operational", "support"];
+import { FilterDialog, type FilterSection, type FilterValues } from "@/components/shared/filter-dialog";
 
 export interface AlertFilterState {
   search: string;
@@ -20,119 +26,83 @@ export interface AlertFilterState {
   sortBy: "priority" | "age" | "variance";
 }
 
-export function AlertFilters({
+const PRIORITY_ICON = { critical: WarningOctagon, high: Warning, medium: MinusCircle, low: ArrowDown };
+const STATUS_ICON = { open: Bell, acknowledged: Eye, resolved: CheckCircle };
+const CATEGORY_ICON = { deployment: Rocket, engagement: TrendUp, operational: Gear, support: Headset };
+
+const SECTIONS: FilterSection[] = [
+  {
+    key: "priority",
+    label: "Priority",
+    options: (["critical", "high", "medium", "low"] as Priority[]).map((p) => ({
+      value: p,
+      label: PRIORITY_LABEL[p],
+      icon: PRIORITY_ICON[p],
+    })),
+  },
+  {
+    key: "status",
+    label: "Status",
+    options: (["open", "acknowledged", "resolved"] as AlertStatus[]).map((s) => ({
+      value: s,
+      label: s.charAt(0).toUpperCase() + s.slice(1),
+      icon: STATUS_ICON[s],
+    })),
+  },
+  {
+    key: "category",
+    label: "Category",
+    options: (["deployment", "engagement", "operational", "support"] as AlertCategory[]).map((c) => ({
+      value: c,
+      label: ALERT_CATEGORY_LABEL[c],
+      icon: CATEGORY_ICON[c],
+    })),
+  },
+  {
+    key: "group",
+    label: "Group",
+    single: true,
+    options: [{ value: "district", label: "By district", icon: MapPin }],
+  },
+];
+
+export function AlertFilterDialog({
+  open,
+  onOpenChange,
   value,
   onChange,
+  groupByDistrict,
+  onGroupChange,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   value: AlertFilterState;
   onChange: (next: AlertFilterState) => void;
+  groupByDistrict: boolean;
+  onGroupChange: (group: boolean) => void;
 }) {
-  function toggle<T>(list: T[], item: T): T[] {
-    return list.includes(item) ? list.filter((i) => i !== item) : [...list, item];
-  }
-
-  const hasActiveFilters =
-    value.search || value.priority.length > 0 || value.status.length > 0 || value.category.length > 0;
+  const current: FilterValues = {
+    priority: value.priority,
+    status: value.status,
+    category: value.category,
+    group: groupByDistrict ? ["district"] : [],
+  };
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <MagnifyingGlass
-            size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
-            value={value.search}
-            onChange={(e) => onChange({ ...value, search: e.target.value })}
-            placeholder="Search alerts by title or description…"
-            className="pl-9"
-            aria-label="Search alerts"
-          />
-        </div>
-        <SortMenu
-          value={value.sortBy}
-          onChange={(sortBy) => onChange({ ...value, sortBy })}
-          options={[
-            { value: "priority", label: "Priority" },
-            { value: "age", label: "Age", icon: SortTimeIcon },
-            { value: "variance", label: "Target variance" },
-          ]}
-        />
-      </div>
-
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="shrink-0 text-xs font-medium text-muted-foreground">Priority</span>
-          {PRIORITY_OPTIONS.map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => onChange({ ...value, priority: toggle(value.priority, p) })}
-              className={cn(
-                "shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
-                value.priority.includes(p)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
-              )}
-              aria-pressed={value.priority.includes(p)}
-            >
-              {PRIORITY_LABEL[p]}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="shrink-0 text-xs font-medium text-muted-foreground">Status</span>
-          {STATUS_OPTIONS.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => onChange({ ...value, status: toggle(value.status, s) })}
-              className={cn(
-                "shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium capitalize transition-colors",
-                value.status.includes(s)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
-              )}
-              aria-pressed={value.status.includes(s)}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="shrink-0 text-xs font-medium text-muted-foreground">Category</span>
-          {CATEGORY_OPTIONS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => onChange({ ...value, category: toggle(value.category, c) })}
-              className={cn(
-                "shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
-                value.category.includes(c)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
-              )}
-              aria-pressed={value.category.includes(c)}
-            >
-              {ALERT_CATEGORY_LABEL[c]}
-            </button>
-          ))}
-        </div>
-
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="ml-auto"
-            onClick={() => onChange({ search: "", priority: [], status: [], category: [], sortBy: value.sortBy })}
-          >
-            Clear filters
-          </Button>
-        )}
-      </div>
-    </div>
+    <FilterDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      sections={SECTIONS}
+      value={current}
+      onApply={(next) => {
+        onChange({
+          ...value,
+          priority: next.priority as Priority[],
+          status: next.status as AlertStatus[],
+          category: next.category as AlertCategory[],
+        });
+        onGroupChange(next.group.length > 0);
+      }}
+    />
   );
 }

@@ -7,7 +7,8 @@ import { ListBullets, MapTrifold } from "@phosphor-icons/react/dist/ssr";
 import type { GeographicHierarchy } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
 import { GeographyBreadcrumbs } from "@/components/map/geography-breadcrumbs";
-import { MapFilters } from "@/components/map/map-filters";
+import { MapFilterDialog, useMapFilterCount } from "@/components/map/map-filter-dialog";
+import { SearchInput } from "@/components/shared/search-input";
 import { MapLegend } from "@/components/map/map-legend";
 import { EducationMapCanvas } from "@/components/map/education-map-canvas";
 import { GeographyListFallback } from "@/components/map/geography-list-fallback";
@@ -36,13 +37,9 @@ function EducationMapContent() {
   const [view, setView] = useState<"map" | "list">("map");
   const [focusResolved, setFocusResolved] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const setSearch = useMapStore((s) => s.setSearch);
+  const activeFilterCount = useMapFilterCount();
   const isDesktop = useIsDesktop();
-
-  const activeFilterCount =
-    (filters.search ? 1 : 0) +
-    filters.priority.length +
-    filters.onboardingStatus.length +
-    (filters.maxEngagement !== null ? 1 : 0);
 
   const allNodes = useEducationMapData({});
   const filteredNodes = useEducationMapData({
@@ -119,39 +116,48 @@ function EducationMapContent() {
 
   return (
     <ContentContainer className="pt-4 pb-4 lg:pt-4 lg:pb-4">
-      <div className="mb-4 flex items-center justify-end gap-2">
-        <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
-          Filter
-          <SortIcon size={18} />
-          {activeFilterCount > 0 && (
-            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-              {activeFilterCount}
-            </span>
-          )}
-        </Button>
-        <div className="flex overflow-hidden rounded-full border border-border">
-          <button
-            type="button"
-            onClick={() => setView("map")}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
-              view === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <SearchInput
+          value={filters.search}
+          onChange={setSearch}
+          placeholder="Search district, block or school"
+          ariaLabel="Search the education map"
+          className="w-80"
+        />
+        <div className="ml-auto flex items-center gap-3">
+          <Button variant="outline" className="gap-2" onClick={() => setFiltersOpen(true)}>
+            Filter
+            <SortIcon size={18} />
+            {activeFilterCount > 0 && (
+              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                {activeFilterCount}
+              </span>
             )}
-            aria-pressed={view === "map"}
-          >
-            <MapTrifold size={15} /> Map
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("list")}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors",
-              view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-            )}
-            aria-pressed={view === "list"}
-          >
-            <ListBullets size={15} /> List
-          </button>
+          </Button>
+          <div className="flex h-10 overflow-hidden rounded-full border border-border bg-card">
+            <button
+              type="button"
+              onClick={() => setView("map")}
+              className={cn(
+                "flex items-center gap-1.5 px-4 text-sm font-semibold transition-colors",
+                view === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+              )}
+              aria-pressed={view === "map"}
+            >
+              <MapTrifold size={16} /> Map
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("list")}
+              className={cn(
+                "flex items-center gap-1.5 px-4 text-sm font-semibold transition-colors",
+                view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+              )}
+              aria-pressed={view === "list"}
+            >
+              <ListBullets size={16} /> List
+            </button>
+          </div>
         </div>
       </div>
 
@@ -180,21 +186,15 @@ function EducationMapContent() {
         )}
       </div>
 
-      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
-        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-md">
-          <SheetHeader className="border-b border-border px-5 py-5">
-            <SheetTitle>Filters</SheetTitle>
-          </SheetHeader>
-          <div className="flex flex-col gap-4 p-5">
-            <MapFilters />
-            <MapLegend />
-          </div>
-        </SheetContent>
-      </Sheet>
+      <MapFilterDialog open={filtersOpen} onOpenChange={setFiltersOpen} />
+
+      <div className="mb-3">
+        <MapLegend />
+      </div>
 
       <div className={cn("grid grid-cols-1 gap-4", selectedNode && "lg:grid-cols-[1fr_380px]")}>
         <div className="flex flex-col gap-3">
-          <div className="h-[calc(100vh-220px)] min-h-[520px] overflow-hidden rounded-lg border border-border bg-card p-2">
+          <div className="isolate h-[calc(100vh-220px)] min-h-[520px] overflow-hidden rounded-lg border border-border bg-card p-2">
             {filteredNodes.isLoading ? (
               <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
                 Loading map data…

@@ -6,25 +6,21 @@ import { ContentContainer } from "@/components/layout/content-container";
 import { ContactCard, ContactRow } from "@/components/directory/contact-card";
 import { SearchInput } from "@/components/shared/search-input";
 import { ViewToggle, type ViewMode } from "@/components/shared/view-toggle";
-import { SortMenu, SortNameIcon } from "@/components/shared/sort-menu";
+import { Flag, GraduationCap, MapPin, SquaresFour } from "@phosphor-icons/react/dist/ssr";
+import { Button } from "@/components/ui/button";
+import { FilterDialog } from "@/components/shared/filter-dialog";
+import { SortIcon, SortMenu, SortNameIcon } from "@/components/shared/sort-menu";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
 import { useLeadershipDirectory } from "@/hooks/use-directory";
 import { useEducationMapData } from "@/hooks/use-map";
-import { cn } from "@/lib/utils";
 
 const LEVEL_OPTIONS: AdministrativeLevel[] = ["state", "district", "block", "school"];
-const LEVEL_LABEL: Record<AdministrativeLevel, string> = {
-  state: "State",
-  district: "District",
-  block: "Block",
-  school: "School",
-};
-
 export default function DirectoryPage() {
   const [search, setSearch] = useState("");
   const [levels, setLevels] = useState<AdministrativeLevel[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [view, setView] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<"name" | "level">("level");
 
@@ -67,44 +63,55 @@ export default function DirectoryPage() {
   return (
     <ContentContainer>
       <div className="mb-5 flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder="Search by name, title, or responsibility"
-          ariaLabel="Search directory"
-        />
-        <ViewToggle value={view} onChange={setView} />
-        <SortMenu
-          value={sortBy}
-          onChange={setSortBy}
-          options={[
-            { value: "level", label: "Administrative level" },
-            { value: "name", label: "Name", icon: SortNameIcon },
-          ]}
-        />
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {LEVEL_OPTIONS.map((level) => (
-            <button
-              key={level}
-              type="button"
-              onClick={() =>
-                setLevels((prev) => (prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]))
-              }
-              className={cn(
-                "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
-                levels.includes(level)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+        <div className="flex flex-wrap items-center gap-3">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Search by name or title"
+            ariaLabel="Search directory"
+            className="w-96 max-w-full"
+          />
+          <div className="ml-auto flex items-center gap-3">
+            <Button variant="outline" className="gap-2" onClick={() => setFilterOpen(true)}>
+              Filter
+              <SortIcon size={18} />
+              {levels.length > 0 && (
+                <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                  {levels.length}
+                </span>
               )}
-              aria-pressed={levels.includes(level)}
-            >
-              {LEVEL_LABEL[level]}
-            </button>
-          ))}
+            </Button>
+            <ViewToggle value={view} onChange={setView} />
+            <SortMenu
+              value={sortBy}
+              onChange={setSortBy}
+              options={[
+                { value: "level", label: "Administrative level" },
+                { value: "name", label: "Name", icon: SortNameIcon },
+              ]}
+            />
+          </div>
         </div>
       </div>
+
+      <FilterDialog
+        open={filterOpen}
+        onOpenChange={setFilterOpen}
+        sections={[
+          {
+            key: "level",
+            label: "Administrative level",
+            options: [
+              { value: "state", label: "State", icon: Flag },
+              { value: "district", label: "District", icon: MapPin },
+              { value: "block", label: "Block", icon: SquaresFour },
+              { value: "school", label: "School", icon: GraduationCap },
+            ],
+          },
+        ]}
+        value={{ level: levels }}
+        onApply={(next) => setLevels(next.level as AdministrativeLevel[])}
+      />
 
       {directory.isLoading ? (
         <ListSkeleton count={6} />
