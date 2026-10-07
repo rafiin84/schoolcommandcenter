@@ -6,6 +6,7 @@ import type { AdministrativeLevel, GeographicHierarchy, LeadershipContact } from
 import { ContentContainer } from "@/components/layout/content-container";
 import { ContactCard } from "@/components/directory/contact-card";
 import { Input } from "@/components/ui/input";
+import { SortMenu, SortNameIcon } from "@/components/shared/sort-menu";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
@@ -24,6 +25,7 @@ const LEVEL_LABEL: Record<AdministrativeLevel, string> = {
 export default function DirectoryPage() {
   const [search, setSearch] = useState("");
   const [levels, setLevels] = useState<AdministrativeLevel[]>([]);
+  const [sortBy, setSortBy] = useState<"name" | "level">("level");
 
   const directory = useLeadershipDirectory({});
   const allNodes = useEducationMapData({});
@@ -54,13 +56,18 @@ export default function DirectoryPage() {
           c.responsibility.toLowerCase().includes(q),
       );
     }
-    return contacts;
-  }, [directory.data, levels, search]);
+    return [...contacts].sort((a, b) =>
+      sortBy === "name"
+        ? a.name.localeCompare(b.name)
+        : LEVEL_OPTIONS.indexOf(a.administrativeLevel) - LEVEL_OPTIONS.indexOf(b.administrativeLevel),
+    );
+  }, [directory.data, levels, search, sortBy]);
 
   return (
     <ContentContainer>
       <div className="mb-4 flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
-        <div className="relative">
+        <div className="flex items-center gap-3">
+        <div className="relative flex-1">
           <MagnifyingGlass
             size={16}
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -72,6 +79,15 @@ export default function DirectoryPage() {
             className="pl-9"
             aria-label="Search directory"
           />
+        </div>
+        <SortMenu
+          value={sortBy}
+          onChange={setSortBy}
+          options={[
+            { value: "level", label: "Administrative level" },
+            { value: "name", label: "Name", icon: SortNameIcon },
+          ]}
+        />
         </div>
         <div className="flex flex-wrap gap-1.5">
           {LEVEL_OPTIONS.map((level) => (

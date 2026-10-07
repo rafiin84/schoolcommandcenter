@@ -5,6 +5,7 @@ import { ContentContainer } from "@/components/layout/content-container";
 import { DirectoryAccountCard } from "@/components/zoho/directory-account-card";
 import { AddZohoAccountDialog } from "@/components/zoho/add-zoho-account-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SortMenu, SortNameIcon, SortTimeIcon } from "@/components/shared/sort-menu";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
@@ -16,6 +17,7 @@ const ALL = "__all__";
 export default function ZohoAccessPage() {
   const [districtId, setDistrictId] = useState(ALL);
   const [blockId, setBlockId] = useState(ALL);
+  const [sortBy, setSortBy] = useState<"name" | "verified">("name");
 
   const accounts = useDirectorySchoolAccounts();
   const draftAccounts = useZohoDirectoryStore((s) => s.draftAccounts);
@@ -41,11 +43,13 @@ export default function ZohoAccessPage() {
   }, [allAccounts, districtId]);
 
   const filtered = useMemo(() => {
-    let list = allAccounts;
+    let list = [...allAccounts];
     if (districtId !== ALL) list = list.filter((a) => a.districtId === districtId);
     if (blockId !== ALL) list = list.filter((a) => a.blockId === blockId);
-    return list;
-  }, [allAccounts, districtId, blockId]);
+    return sortBy === "name"
+      ? list.sort((a, b) => a.schoolName.localeCompare(b.schoolName))
+      : list.sort((a, b) => new Date(b.lastVerifiedAt).getTime() - new Date(a.lastVerifiedAt).getTime());
+  }, [allAccounts, districtId, blockId, sortBy]);
 
   return (
     <ContentContainer>
@@ -90,7 +94,15 @@ export default function ZohoAccessPage() {
           </Select>
         </div>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
+          <SortMenu
+            value={sortBy}
+            onChange={setSortBy}
+            options={[
+              { value: "name", label: "Name", icon: SortNameIcon },
+              { value: "verified", label: "Last verified", icon: SortTimeIcon },
+            ]}
+          />
           <AddZohoAccountDialog allAccounts={allAccounts} />
         </div>
       </div>

@@ -8,6 +8,7 @@ import { AnnouncementComposer } from "@/components/announcements/announcement-co
 import { AnnouncementCard } from "@/components/announcements/announcement-card";
 import { AnnouncementProfileCard } from "@/components/announcements/announcement-profile-card";
 import { AnnouncementStatsCard } from "@/components/announcements/announcement-stats-card";
+import { SortMenu, SortTimeIcon } from "@/components/shared/sort-menu";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
@@ -37,6 +38,7 @@ function groupByRecency(items: Announcement[]) {
 
 export default function AnnouncementsPage() {
   const [audienceFilter, setAudienceFilter] = useState(ALL);
+  const [order, setOrder] = useState<"newest" | "oldest">("newest");
 
   const announcements = useAnnouncements();
   const districts = useDistrictSummaries();
@@ -58,7 +60,12 @@ export default function AnnouncementsPage() {
     return feed.filter((a) => a.districtId === audienceFilter);
   }, [feed, audienceFilter]);
 
-  const groups = useMemo(() => groupByRecency(filtered), [filtered]);
+  const groups = useMemo(() => {
+    const grouped = groupByRecency(filtered);
+    return order === "newest"
+      ? grouped
+      : [...grouped].reverse().map((g) => ({ ...g, items: [...g.items].reverse() }));
+  }, [filtered, order]);
 
   const districtsWithAnnouncements = useMemo(() => {
     const ids = new Set(feed.map((a) => a.districtId).filter((id): id is string => Boolean(id)));
@@ -96,6 +103,15 @@ export default function AnnouncementsPage() {
                 ),
               )}
             </div>
+
+            <SortMenu
+              value={order}
+              onChange={setOrder}
+              options={[
+                { value: "newest", label: "Newest first", icon: SortTimeIcon },
+                { value: "oldest", label: "Oldest first" },
+              ]}
+            />
 
             {filtered.length > 0 && (
               <button

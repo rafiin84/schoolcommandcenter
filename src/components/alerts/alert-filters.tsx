@@ -4,13 +4,7 @@ import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import type { AlertCategory, AlertStatus, Priority } from "@/types";
 import { ALERT_CATEGORY_LABEL, PRIORITY_LABEL } from "@/lib/constants";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SortMenu, SortTimeIcon } from "@/components/shared/sort-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -56,16 +50,15 @@ export function AlertFilters({
             aria-label="Search alerts"
           />
         </div>
-        <Select value={value.sortBy} onValueChange={(v) => onChange({ ...value, sortBy: v as AlertFilterState["sortBy"] })}>
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="priority">Sort by priority</SelectItem>
-            <SelectItem value="age">Sort by age</SelectItem>
-            <SelectItem value="variance">Sort by target variance</SelectItem>
-          </SelectContent>
-        </Select>
+        <SortMenu
+          value={value.sortBy}
+          onChange={(sortBy) => onChange({ ...value, sortBy })}
+          options={[
+            { value: "priority", label: "Priority" },
+            { value: "age", label: "Age", icon: SortTimeIcon },
+            { value: "variance", label: "Target variance" },
+          ]}
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
