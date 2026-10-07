@@ -1,8 +1,9 @@
 "use client";
 
+import { SortIcon } from "@/components/shared/sort-menu";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FunnelSimple, ListBullets, MapTrifold } from "@phosphor-icons/react/dist/ssr";
+import { ListBullets, MapTrifold } from "@phosphor-icons/react/dist/ssr";
 import type { GeographicHierarchy } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
 import { GeographyBreadcrumbs } from "@/components/map/geography-breadcrumbs";
@@ -120,8 +121,8 @@ function EducationMapContent() {
     <ContentContainer className="pt-4 pb-4 lg:pt-4 lg:pb-4">
       <div className="mb-4 flex items-center justify-end gap-2">
         <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
-          <FunnelSimple size={15} />
           Filter
+          <SortIcon size={18} />
           {activeFilterCount > 0 && (
             <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
               {activeFilterCount}
