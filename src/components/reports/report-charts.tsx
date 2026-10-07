@@ -104,7 +104,7 @@ export function ChartCard({
   const [showTable, setShowTable] = useState(false);
 
   return (
-    <section className={cn("flex flex-col rounded-2xl border border-border bg-card p-4 sm:p-6", className)}>
+    <section className={cn("flex flex-col rounded-lg border border-border bg-card p-4 sm:p-6", className)}>
       <SectionHeader
         title={title}
         description={description}

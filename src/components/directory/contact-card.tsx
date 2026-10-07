@@ -14,10 +14,10 @@ const LEVEL_LABEL: Record<LeadershipContact["administrativeLevel"], string> = {
 };
 
 const LEVEL_ACCENT: Record<LeadershipContact["administrativeLevel"], { card: string; avatar: string; badge: string }> = {
-  state: { card: "bg-primary/5", avatar: "bg-primary/10 text-primary", badge: "bg-primary/8 text-primary" },
-  district: { card: "bg-chart-1/5", avatar: "bg-chart-1/10 text-chart-1", badge: "bg-chart-1/8 text-chart-1" },
-  block: { card: "bg-brand-accent/5", avatar: "bg-brand-accent/10 text-brand-accent", badge: "bg-brand-accent/8 text-brand-accent" },
-  school: { card: "bg-chart-5/5", avatar: "bg-chart-5/10 text-chart-5", badge: "bg-chart-5/8 text-chart-5" },
+  state: { card: "border border-border bg-card", avatar: "bg-accent text-primary", badge: "bg-accent text-primary" },
+  district: { card: "border border-border bg-card", avatar: "bg-accent text-primary", badge: "bg-accent text-primary" },
+  block: { card: "border border-border bg-card", avatar: "bg-accent text-primary", badge: "bg-accent text-primary" },
+  school: { card: "border border-border bg-card", avatar: "bg-accent text-primary", badge: "bg-accent text-primary" },
 };
 
 function initialsFor(name: string): string {
@@ -39,7 +39,7 @@ export function ContactCard({
   const accent = LEVEL_ACCENT[contact.administrativeLevel];
 
   return (
-    <div className={`flex flex-col gap-4 rounded-2xl p-4 sm:p-5 ${accent.card}`}>
+    <div className={`flex flex-col gap-4 rounded-lg p-4 sm:p-5 ${accent.card}`}>
       <div className="flex items-start gap-3">
         <Avatar className="size-11">
           <AvatarFallback className={`font-semibold ${accent.avatar}`}>{initialsFor(contact.name)}</AvatarFallback>

@@ -221,7 +221,7 @@ export default function EducationMapCanvasInner({
         center={initialCenter.current}
         zoom={7}
         scrollWheelZoom
-        className="h-full w-full rounded-2xl"
+        className="h-full w-full rounded-lg"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

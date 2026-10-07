@@ -59,7 +59,7 @@ export default function DirectoryPage() {
 
   return (
     <ContentContainer>
-      <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
+      <div className="mb-4 flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
         <div className="relative">
           <MagnifyingGlass
             size={16}

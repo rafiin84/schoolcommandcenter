@@ -163,7 +163,7 @@ export function AnnouncementComposer() {
   }
 
   return (
-    <div className="mb-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <div className="mb-6 rounded-lg border border-border bg-card p-4 sm:p-5">
       <input
         ref={fileInputRef}
         type="file"

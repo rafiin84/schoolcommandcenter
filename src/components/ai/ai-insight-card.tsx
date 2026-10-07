@@ -43,7 +43,7 @@ export function AiInsightCard({
   const accent = INSIGHT_ACCENT[insight.insightType];
 
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${accent.card}`}>
+    <div className={`rounded-lg p-4 sm:p-5 ${accent.card}`}>
       <div className="flex items-start gap-3">
         <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${accent.icon}`}>
           <Icon size={18} />

@@ -53,7 +53,7 @@ export function TemplateCard({ template }: { template: CourseTemplate }) {
 
   return (
     <>
-      <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
+      <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-card">
         <button
           type="button"
           onClick={() => canPreview && setPreviewOpen(true)}

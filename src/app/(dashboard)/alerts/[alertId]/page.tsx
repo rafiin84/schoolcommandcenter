@@ -91,7 +91,7 @@ export default function AlertDetailPage() {
   }
 
   return (
-    <ContentContainer className="max-w-4xl">
+    <ContentContainer>
       <PageHeader
         breadcrumbs={
           <GeographyBreadcrumbs
@@ -109,7 +109,7 @@ export default function AlertDetailPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section className="rounded-lg border border-border bg-card p-5">
             <h2 className="mb-4 text-section-heading">Supporting metric</h2>
             <MetricComparison
               metricName={alert.metricName}
@@ -119,12 +119,12 @@ export default function AlertDetailPage() {
             />
           </section>
 
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section className="rounded-lg border border-border bg-card p-5">
             <h2 className="mb-3 text-section-heading">Suggested follow-up</h2>
             <SuggestedActionList actions={[alert.recommendedAction]} />
           </section>
 
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section className="rounded-lg border border-border bg-card p-5">
             <h2 className="mb-3 text-section-heading">Timeline</h2>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2 text-muted-foreground">
@@ -142,7 +142,7 @@ export default function AlertDetailPage() {
         </div>
 
         <div className="space-y-6">
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section className="rounded-lg border border-border bg-card p-5">
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Status
             </h2>
@@ -162,7 +162,7 @@ export default function AlertDetailPage() {
           </section>
 
           {geographyNode && (
-            <section className="rounded-2xl border border-border bg-card p-5">
+            <section className="rounded-lg border border-border bg-card p-5">
               <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Geographic context
               </h2>
@@ -181,7 +181,7 @@ export default function AlertDetailPage() {
           )}
 
           {contact && (
-            <section className="rounded-2xl border border-border bg-card p-5">
+            <section className="rounded-lg border border-border bg-card p-5">
               <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Responsible stakeholder
               </h2>
@@ -199,7 +199,7 @@ export default function AlertDetailPage() {
           )}
 
           {isSchoolAlert && zohoAccount.data?.data && (
-            <section className="rounded-2xl border border-border bg-card p-5">
+            <section className="rounded-lg border border-border bg-card p-5">
               <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Zoho Classes account
               </h2>

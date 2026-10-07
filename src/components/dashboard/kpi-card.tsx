@@ -21,16 +21,7 @@ const TREND_TONE: Record<TrendDirection, string> = {
 
 export type KpiTone = "blue" | "orange" | "green" | "amber" | "pink" | "teal" | "red" | "navy";
 
-const TONE_STYLES: Record<KpiTone, { card: string; icon: string }> = {
-  blue: { card: "bg-chart-1/8", icon: "bg-chart-1/15 text-chart-1" },
-  orange: { card: "bg-chart-2/8", icon: "bg-chart-2/15 text-chart-2" },
-  green: { card: "bg-chart-3/8", icon: "bg-chart-3/15 text-chart-3" },
-  amber: { card: "bg-chart-4/8", icon: "bg-chart-4/15 text-chart-4" },
-  pink: { card: "bg-chart-5/8", icon: "bg-chart-5/15 text-chart-5" },
-  teal: { card: "bg-brand-accent/8", icon: "bg-brand-accent/15 text-brand-accent" },
-  red: { card: "bg-status-critical/8", icon: "bg-status-critical/15 text-status-critical" },
-  navy: { card: "bg-primary/8", icon: "bg-primary/15 text-primary" },
-};
+const TILE = { card: "bg-accent", icon: "text-primary" };
 
 export interface KpiCardProps {
   label: string;
@@ -47,47 +38,45 @@ export interface KpiCardProps {
 
 export function KpiCard({ label, value, helpText, trend, icon: Icon, href, tone }: KpiCardProps) {
   const TrendIcon = trend ? TREND_ICON[trend.direction] : null;
-  const toneStyle = tone ? TONE_STYLES[tone] : null;
+  void tone;
+  const toneStyle = TILE;
 
   const content = (
     <motion.div
       whileHover={href ? { y: -2 } : undefined}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={cn(
-        "flex h-full flex-col gap-3 rounded-2xl p-5 shadow-sm transition-shadow",
-        toneStyle ? toneStyle.card : "border border-border bg-card",
+        "flex h-full flex-col gap-3 rounded-lg p-4 transition-shadow",
+        toneStyle.card,
         href && "cursor-pointer hover:shadow-md",
       )}
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-muted-foreground">{label}</span>
-        {Icon && (
-          <span
-            className={cn(
-              "flex size-8 shrink-0 items-center justify-center rounded-lg",
-              toneStyle ? toneStyle.icon : "bg-muted text-muted-foreground",
-            )}
-          >
-            <Icon size={16} />
-          </span>
-        )}
+      {Icon && (
+        <span className={cn("flex size-7 shrink-0 items-center", toneStyle.icon)}>
+          <Icon size={24} weight="fill" />
+        </span>
+      )}
+      <div className="mt-2 space-y-1">
+        <p className="text-xl font-semibold tabular-nums text-foreground">{value}</p>
+        <span className="block text-sm text-muted-foreground">{label}</span>
       </div>
-      <p className="text-kpi">{value}</p>
-      <div className="flex items-center justify-between gap-2">
-        {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
-        {trend && TrendIcon && (
-          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", TREND_TONE[trend.direction])}>
-            <TrendIcon size={12} weight="bold" />
-            {trend.label}
-          </span>
-        )}
-      </div>
+      {(helpText || trend) && (
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+          {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
+          {trend && TrendIcon && (
+            <span className={cn("inline-flex items-center gap-1 text-xs font-medium", TREND_TONE[trend.direction])}>
+              <TrendIcon size={12} weight="bold" />
+              {trend.label}
+            </span>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 
   if (href) {
     return (
-      <Link href={href} className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded-2xl">
+      <Link href={href} className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded-lg">
         {content}
       </Link>
     );

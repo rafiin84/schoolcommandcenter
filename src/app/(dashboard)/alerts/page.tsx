@@ -82,7 +82,7 @@ function AlertsContent() {
   }, [groupByGeography, data, allNodes.data]);
 
   return (
-    <ContentContainer className="max-w-none px-3 pt-3 sm:px-4 sm:pt-4 lg:px-4 lg:pt-4">
+    <ContentContainer className="pt-3">
       <div className="mb-4 flex items-center justify-end">
         <Button variant="outline" size="sm" className="gap-2" onClick={() => setFiltersOpen(true)}>
           <FunnelSimple size={15} />
@@ -96,15 +96,15 @@ function AlertsContent() {
       </div>
 
       <div className="mb-4 grid grid-cols-3 gap-3">
-        <div className="rounded-xl bg-primary/8 p-3">
+        <div className="rounded-lg bg-accent p-4">
           <p className="text-xs text-muted-foreground">Total matching</p>
           <p className="text-xl font-semibold tabular-nums">{counts.total}</p>
         </div>
-        <div className="rounded-xl bg-status-critical/8 p-3">
+        <div className="rounded-lg bg-accent p-4">
           <p className="text-xs text-muted-foreground">Open</p>
           <p className="text-xl font-semibold tabular-nums text-status-critical">{counts.open}</p>
         </div>
-        <div className="rounded-xl bg-chart-4/8 p-3">
+        <div className="rounded-lg bg-accent p-4">
           <p className="text-xs text-muted-foreground">Critical priority</p>
           <p className="text-xl font-semibold tabular-nums">{counts.critical}</p>
         </div>

@@ -59,7 +59,7 @@ export default function ZohoAccessPage() {
               setBlockId(ALL);
             }}
           >
-            <SelectTrigger className="h-14 w-64 rounded-xl border-2 border-primary/25 bg-primary/5 px-4 text-base font-medium">
+            <SelectTrigger className="h-10 w-64 rounded-lg border border-border bg-card px-3 text-sm">
               <SelectValue placeholder="All districts" />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +76,7 @@ export default function ZohoAccessPage() {
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-foreground">Block</label>
           <Select value={blockId} onValueChange={(value) => setBlockId(value ?? ALL)}>
-            <SelectTrigger className="h-14 w-64 rounded-xl border-2 border-brand-accent/25 bg-brand-accent/5 px-4 text-base font-medium">
+            <SelectTrigger className="h-10 w-64 rounded-lg border border-border bg-card px-3 text-sm">
               <SelectValue placeholder="All blocks" />
             </SelectTrigger>
             <SelectContent>

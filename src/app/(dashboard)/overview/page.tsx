@@ -45,7 +45,18 @@ export default function OverviewPage() {
 
   return (
     <ContentContainer className="pt-3 sm:pt-4 lg:pt-4">
-      <div className="mb-4 flex items-center justify-end">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <span className="flex size-14 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
+            Z
+          </span>
+          <div>
+            <p className="text-lg text-foreground">Hi, State Reviewer</p>
+            <h1 className="text-xl font-semibold text-foreground">
+              Welcome to <span className="text-primary">School Command Center</span>
+            </h1>
+          </div>
+        </div>
         <Button render={<Link href="/education-map" />} nativeButton={false} className="gap-2">
           <MapTrifold size={16} />
           Open Education Map
@@ -141,7 +152,7 @@ export default function OverviewPage() {
         ) : null}
       </section>
 
-      <section aria-labelledby="trend-heading" className="mb-8 rounded-2xl border border-border bg-card p-4 sm:p-6">
+      <section aria-labelledby="trend-heading" className="mb-8 rounded-lg border border-border bg-card p-4 sm:p-6">
         <SectionHeader
           title="Statewide trend"
           description="Weekly rollup across the last reporting cycles. Toggle a series or switch the time range."
@@ -156,7 +167,7 @@ export default function OverviewPage() {
       </section>
 
       <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <section aria-labelledby="map-preview-heading" className="lg:col-span-3 rounded-2xl border border-border bg-card p-4 sm:p-6">
+        <section aria-labelledby="map-preview-heading" className="lg:col-span-3 rounded-lg border border-border bg-card p-4 sm:p-6">
           <SectionHeader
             title="Living Tamil Nadu education map"
             description="District operational health at a glance."
@@ -175,7 +186,7 @@ export default function OverviewPage() {
           ) : null}
         </section>
 
-        <section aria-labelledby="notifications-preview-heading" className="lg:col-span-2 rounded-2xl border border-border bg-card">
+        <section aria-labelledby="notifications-preview-heading" className="lg:col-span-2 rounded-lg border border-border bg-card">
           <div className="p-4 pb-0 sm:p-6 sm:pb-0">
             <SectionHeader
               title="Notifications"

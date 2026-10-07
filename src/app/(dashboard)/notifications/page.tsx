@@ -51,7 +51,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <ContentContainer className="max-w-4xl">
+    <ContentContainer>
       <PageHeader
         eyebrow="Tamil Nadu · Updates"
         title="Notifications"
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
         </TabsList>
       </Tabs>
 
-      <div className="rounded-2xl border border-border bg-card">
+      <div className="rounded-lg border border-border bg-card">
         {notifications.isLoading ? (
           <div className="p-4">
             <ListSkeleton count={6} />

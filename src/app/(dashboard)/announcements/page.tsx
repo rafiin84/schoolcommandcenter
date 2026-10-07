@@ -6,7 +6,8 @@ import type { Announcement } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
 import { AnnouncementComposer } from "@/components/announcements/announcement-composer";
 import { AnnouncementCard } from "@/components/announcements/announcement-card";
-import { AnnouncementRecentActivity } from "@/components/announcements/announcement-recent-activity";
+import { AnnouncementProfileCard } from "@/components/announcements/announcement-profile-card";
+import { AnnouncementStatsCard } from "@/components/announcements/announcement-stats-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
@@ -65,13 +66,13 @@ export default function AnnouncementsPage() {
   }, [feed, districts.data]);
 
   return (
-    <ContentContainer className="max-w-none px-3 sm:px-4 lg:px-4">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        Tamil Nadu · Updates
-      </p>
+    <ContentContainer className="pt-3">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)_300px]">
+        <div className="sticky top-32 hidden max-h-[calc(100svh-9rem)] overflow-y-auto lg:block">
+          <AnnouncementProfileCard announcements={feed} />
+        </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[650px_1fr]">
-        <div className="w-full lg:max-w-[650px]">
+        <div className="w-full min-w-0">
           <AnnouncementComposer />
 
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -135,8 +136,8 @@ export default function AnnouncementsPage() {
           )}
         </div>
 
-        <div className="hidden lg:block">
-          <AnnouncementRecentActivity announcements={feed} />
+        <div className="sticky top-32 hidden max-h-[calc(100svh-9rem)] overflow-y-auto lg:block">
+          <AnnouncementStatsCard announcements={feed} />
         </div>
       </div>
     </ContentContainer>

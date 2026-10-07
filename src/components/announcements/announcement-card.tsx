@@ -5,9 +5,7 @@ import type { Announcement } from "@/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDateTime, formatRelativeTime } from "@/lib/formatters";
 import {
-  ANNOUNCEMENT_CATEGORY_BADGE_CLASS,
   ANNOUNCEMENT_CATEGORY_CARD_ACCENT,
-  ANNOUNCEMENT_CATEGORY_LABEL,
 } from "@/lib/constants/announcement-categories";
 import { useAnnouncementStore } from "@/store/announcement-store";
 import { AnnouncementAttachmentView } from "./announcement-attachment-view";
@@ -32,7 +30,7 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
 
   return (
     <article
-      className={`flex flex-col gap-3 rounded-2xl p-4 sm:p-5 ${ANNOUNCEMENT_CATEGORY_CARD_ACCENT[announcement.category]}`}
+      className={`flex flex-col gap-3 rounded-lg p-4 sm:p-5 ${ANNOUNCEMENT_CATEGORY_CARD_ACCENT[announcement.category]}`}
     >
       <header className="flex items-start gap-3">
         <Avatar>
@@ -50,11 +48,6 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <span
-            className={`rounded-full px-2.5 py-1 text-xs font-medium ${ANNOUNCEMENT_CATEGORY_BADGE_CLASS[announcement.category]}`}
-          >
-            {ANNOUNCEMENT_CATEGORY_LABEL[announcement.category]}
-          </span>
           <button
             type="button"
             onClick={() => dismissAnnouncement(announcement.id)}
@@ -67,7 +60,7 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
       </header>
 
       <div>
-        <h3 className="text-section-heading mb-1">{announcement.title}</h3>
+        <h3 className="mb-1 text-base font-semibold text-foreground">{announcement.title}</h3>
         <p className="text-body whitespace-pre-line text-muted-foreground">{announcement.body}</p>
       </div>
 

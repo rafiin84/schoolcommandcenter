@@ -6,7 +6,7 @@ const TEMPLATE_GALLERY_URL = "https://templates.onslate.in/";
 
 export default function CourseTemplatePage() {
   return (
-    <ContentContainer className="flex h-[calc(100svh-10rem)] min-h-[32rem] flex-col pt-3 sm:pt-4 md:h-[calc(100svh-4rem)] lg:pt-4">
+    <ContentContainer className="flex h-[calc(100svh-10rem)] min-h-[32rem] flex-col pt-3 sm:pt-4 md:h-[calc(100svh-6.5rem)] lg:pt-4">
       <div className="mb-4 flex items-center justify-end">
         <Button
           variant="outline"
@@ -23,7 +23,7 @@ export default function CourseTemplatePage() {
       <iframe
         src={TEMPLATE_GALLERY_URL}
         title="Course template gallery"
-        className="w-full flex-1 rounded-2xl border border-border bg-card"
+        className="w-full flex-1 rounded-lg border border-border bg-card"
         allow="fullscreen; clipboard-write; autoplay; encrypted-media; picture-in-picture"
         referrerPolicy="strict-origin-when-cross-origin"
       />

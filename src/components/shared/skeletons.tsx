@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function KpiCardSkeleton() {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
+    <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5">
       <Skeleton className="h-4 w-24" />
       <Skeleton className="h-9 w-32" />
       <Skeleton className="h-3 w-40" />
@@ -45,7 +45,7 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
 
 export function ChartSkeleton() {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
+    <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5">
       <Skeleton className="h-4 w-40" />
       <Skeleton className="h-56 w-full rounded-lg" />
     </div>

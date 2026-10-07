@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -73,43 +73,43 @@
   color-scheme: light;
 
   /* Page plane + primary ink */
-  --background: #f9f9f7;
-  --foreground: #0b0b0b;
+  --background: #ffffff;
+  --foreground: #1f2430;
 
   /* Elevated card / popover surface */
-  --card: #fcfcfb;
-  --card-foreground: #0b0b0b;
-  --popover: #fcfcfb;
-  --popover-foreground: #0b0b0b;
+  --card: #ffffff;
+  --card-foreground: #1f2430;
+  --popover: #ffffff;
+  --popover-foreground: #1f2430;
 
-  --surface-sunken: #f1f0eb;
+  --surface-sunken: #f4f5f7;
   --surface-raised: #ffffff;
 
-  /* Brand: deep government-trust navy */
-  --primary: #1e3a6e;
+  /* Brand: Zoho Classes indigo */
+  --primary: #4f46e5;
   --primary-foreground: #ffffff;
-  --brand-primary: #1e3a6e;
+  --brand-primary: #4f46e5;
   --brand-primary-foreground: #ffffff;
 
   /* Brand accent: restrained teal, used for progress/positive momentum */
   --brand-accent: #1baf7a;
   --brand-accent-foreground: #ffffff;
 
-  --secondary: #f1f0ec;
-  --secondary-foreground: #1a1a19;
+  --secondary: #f4f5f7;
+  --secondary-foreground: #1f2430;
 
-  --muted: #f4f3ef;
-  --muted-foreground: #6b6a63;
+  --muted: #f4f5f7;
+  --muted-foreground: #5f6674;
 
-  --accent: #ebf1fb;
-  --accent-foreground: #142a52;
+  --accent: #eeedfc;
+  --accent-foreground: #3d35c4;
 
   --destructive: #d03b3b;
   --destructive-foreground: #ffffff;
 
-  --border: #e4e2dc;
-  --input: #e4e2dc;
-  --ring: #1e3a6e;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #4f46e5;
 
   /* Categorical chart palette (validated: worst adjacent CVD ΔE 9.1, normal-vision ΔE 19.6) */
   --chart-1: #2a78d6;
@@ -130,16 +130,16 @@
   --status-info: #2a78d6;
   --status-info-foreground: #ffffff;
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  --sidebar: #fcfcfb;
+  --sidebar: #ffffff;
   --sidebar-foreground: #0b0b0b;
-  --sidebar-primary: #1e3a6e;
+  --sidebar-primary: #4f46e5;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ebf1fb;
-  --sidebar-accent-foreground: #142a52;
-  --sidebar-border: #e4e2dc;
-  --sidebar-ring: #1e3a6e;
+  --sidebar-accent: #eeedfc;
+  --sidebar-accent-foreground: #3d35c4;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #4f46e5;
 }
 
 .dark {
@@ -156,9 +156,9 @@
   --surface-sunken: #131312;
   --surface-raised: #202020;
 
-  --primary: #6e93d6;
+  --primary: #8b84f5;
   --primary-foreground: #0b0b0b;
-  --brand-primary: #6e93d6;
+  --brand-primary: #8b84f5;
   --brand-primary-foreground: #0b0b0b;
 
   --brand-accent: #199e70;
@@ -170,15 +170,15 @@
   --muted: #1f1f1d;
   --muted-foreground: #a3a199;
 
-  --accent: #1b2436;
-  --accent-foreground: #dce7fb;
+  --accent: #25234a;
+  --accent-foreground: #dedbff;
 
   --destructive: #e66767;
   --destructive-foreground: #1a1a19;
 
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: #6e93d6;
+  --ring: #8b84f5;
 
   --chart-1: #3987e5;
   --chart-2: #d95926;
@@ -199,12 +199,12 @@
 
   --sidebar: #141413;
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #6e93d6;
+  --sidebar-primary: #8b84f5;
   --sidebar-primary-foreground: #0b0b0b;
-  --sidebar-accent: #1b2436;
-  --sidebar-accent-foreground: #dce7fb;
+  --sidebar-accent: #25234a;
+  --sidebar-accent-foreground: #dedbff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #6e93d6;
+  --sidebar-ring: #8b84f5;
 }
 
 @layer base {
