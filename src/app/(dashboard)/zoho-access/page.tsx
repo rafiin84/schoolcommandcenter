@@ -2,10 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { ContentContainer } from "@/components/layout/content-container";
-import { DirectoryAccountCard } from "@/components/zoho/directory-account-card";
+import { DirectoryAccountCard, DirectoryAccountRow } from "@/components/zoho/directory-account-card";
 import { AddZohoAccountDialog } from "@/components/zoho/add-zoho-account-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SortMenu, SortNameIcon, SortTimeIcon } from "@/components/shared/sort-menu";
+import { SearchInput } from "@/components/shared/search-input";
+import { ViewToggle, type ViewMode } from "@/components/shared/view-toggle";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
@@ -17,6 +19,8 @@ const ALL = "__all__";
 export default function ZohoAccessPage() {
   const [districtId, setDistrictId] = useState(ALL);
   const [blockId, setBlockId] = useState(ALL);
+  const [search, setSearch] = useState("");
+  const [view, setView] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<"name" | "verified">("name");
 
   const accounts = useDirectorySchoolAccounts();
@@ -46,16 +50,25 @@ export default function ZohoAccessPage() {
     let list = [...allAccounts];
     if (districtId !== ALL) list = list.filter((a) => a.districtId === districtId);
     if (blockId !== ALL) list = list.filter((a) => a.blockId === blockId);
+    const q = search.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (a) =>
+          a.schoolName.toLowerCase().includes(q) ||
+          a.loginEmail.toLowerCase().includes(q) ||
+          a.blockLabel.toLowerCase().includes(q),
+      );
+    }
     return sortBy === "name"
       ? list.sort((a, b) => a.schoolName.localeCompare(b.schoolName))
       : list.sort((a, b) => new Date(b.lastVerifiedAt).getTime() - new Date(a.lastVerifiedAt).getTime());
-  }, [allAccounts, districtId, blockId, sortBy]);
+  }, [allAccounts, districtId, blockId, sortBy, search]);
 
   return (
     <ContentContainer>
       <div className="mb-6 flex flex-wrap items-end gap-3">
         <div>
-          <label className="mb-1.5 block text-sm font-semibold text-foreground">District</label>
+          <label className="mb-2 block text-base font-semibold text-foreground">District</label>
           <Select
             value={districtId}
             onValueChange={(value) => {
@@ -63,8 +76,8 @@ export default function ZohoAccessPage() {
               setBlockId(ALL);
             }}
           >
-            <SelectTrigger className="h-10 w-64 rounded-lg border border-border bg-card px-3 text-sm">
-              <SelectValue placeholder="All districts" />
+            <SelectTrigger className="h-11 w-64 rounded-xl border border-border bg-card px-4 text-base">
+              <SelectValue placeholder="All districts">{districtId === ALL ? "All districts" : districts.find((d) => d.id === districtId)?.name}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>All districts</SelectItem>
@@ -78,10 +91,10 @@ export default function ZohoAccessPage() {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-semibold text-foreground">Block</label>
+          <label className="mb-2 block text-base font-semibold text-foreground">Block</label>
           <Select value={blockId} onValueChange={(value) => setBlockId(value ?? ALL)}>
-            <SelectTrigger className="h-10 w-64 rounded-lg border border-border bg-card px-3 text-sm">
-              <SelectValue placeholder="All blocks" />
+            <SelectTrigger className="h-11 w-64 rounded-xl border border-border bg-card px-4 text-base">
+              <SelectValue placeholder="All blocks">{blockId === ALL ? "All blocks" : blocks.find((b) => b.id === blockId)?.label}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>All blocks</SelectItem>
@@ -94,7 +107,15 @@ export default function ZohoAccessPage() {
           </Select>
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex flex-wrap items-center gap-3">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Search"
+            ariaLabel="Search accounts"
+            className="w-64"
+          />
+          <ViewToggle value={view} onChange={setView} />
           <SortMenu
             value={sortBy}
             onChange={setSortBy}
@@ -118,13 +139,17 @@ export default function ZohoAccessPage() {
       ) : filtered.length === 0 ? (
         <EmptyState
           title="No matching accounts"
-          description="Try clearing the District/Block filter."
+          description="Try a different search or clear the District/Block filter."
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((account) => (
-            <DirectoryAccountCard key={account.id} account={account} />
-          ))}
+        <div className={view === "grid" ? "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" : "flex flex-col gap-2"}>
+          {filtered.map((account) =>
+            view === "grid" ? (
+              <DirectoryAccountCard key={account.id} account={account} />
+            ) : (
+              <DirectoryAccountRow key={account.id} account={account} />
+            ),
+          )}
         </div>
       )}
     </ContentContainer>

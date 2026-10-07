@@ -103,3 +103,32 @@ export function DirectoryAccountCard({ account }: { account: DirectorySchoolAcco
     </div>
   );
 }
+
+/** Compact one-line version of the card for the list view. */
+export function DirectoryAccountRow({ account }: { account: DirectorySchoolAccount }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const status = STATUS_CONFIG[account.status];
+  const StatusIcon = status.icon;
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="min-w-48 flex-1">
+        <p className="truncate text-sm font-semibold text-foreground">{account.schoolName}</p>
+        <p className="text-xs text-muted-foreground">
+          {account.blockLabel}, {account.districtName}
+        </p>
+      </div>
+      <p className="text-data hidden min-w-56 flex-1 truncate text-xs text-foreground lg:block">{account.loginEmail}</p>
+      <p className="hidden w-44 text-xs text-muted-foreground xl:block">{formatDateTime(account.lastVerifiedAt)}</p>
+      <span className={cn("flex w-24 shrink-0 items-center gap-1 text-xs font-medium", status.className)}>
+        <StatusIcon size={14} weight="fill" />
+        {status.label}
+      </span>
+      <Button size="sm" variant={account.status === "suspended" ? "outline" : "default"} className="gap-2" onClick={() => setConfirmOpen(true)}>
+        Open Zoho Classes
+        <ArrowSquareOut size={14} />
+      </Button>
+      <DirectoryAccessConfirmation open={confirmOpen} onOpenChange={setConfirmOpen} account={account} />
+    </div>
+  );
+}

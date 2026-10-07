@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import type { AdministrativeLevel, GeographicHierarchy, LeadershipContact } from "@/types";
 import { ContentContainer } from "@/components/layout/content-container";
-import { ContactCard } from "@/components/directory/contact-card";
-import { Input } from "@/components/ui/input";
+import { ContactCard, ContactRow } from "@/components/directory/contact-card";
+import { SearchInput } from "@/components/shared/search-input";
+import { ViewToggle, type ViewMode } from "@/components/shared/view-toggle";
 import { SortMenu, SortNameIcon } from "@/components/shared/sort-menu";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
@@ -25,6 +25,7 @@ const LEVEL_LABEL: Record<AdministrativeLevel, string> = {
 export default function DirectoryPage() {
   const [search, setSearch] = useState("");
   const [levels, setLevels] = useState<AdministrativeLevel[]>([]);
+  const [view, setView] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<"name" | "level">("level");
 
   const directory = useLeadershipDirectory({});
@@ -65,21 +66,15 @@ export default function DirectoryPage() {
 
   return (
     <ContentContainer>
-      <div className="mb-4 flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
+      <div className="mb-5 flex flex-col gap-3">
         <div className="flex items-center gap-3">
-        <div className="relative flex-1">
-          <MagnifyingGlass
-            size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, title, or responsibility…"
-            className="pl-9"
-            aria-label="Search directory"
-          />
-        </div>
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search by name, title, or responsibility"
+          ariaLabel="Search directory"
+        />
+        <ViewToggle value={view} onChange={setView} />
         <SortMenu
           value={sortBy}
           onChange={setSortBy}
@@ -121,10 +116,14 @@ export default function DirectoryPage() {
           description="Try a different search term or clear the administrative level filter."
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} geographyLabel={geographyLabelFor(contact)} />
-          ))}
+        <div className={view === "grid" ? "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" : "flex flex-col gap-2"}>
+          {filtered.map((contact) =>
+            view === "grid" ? (
+              <ContactCard key={contact.id} contact={contact} geographyLabel={geographyLabelFor(contact)} />
+            ) : (
+              <ContactRow key={contact.id} contact={contact} geographyLabel={geographyLabelFor(contact)} />
+            ),
+          )}
         </div>
       )}
     </ContentContainer>

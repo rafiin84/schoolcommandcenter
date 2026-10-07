@@ -92,3 +92,36 @@ export function ContactCard({
     </div>
   );
 }
+
+/** Compact one-line version of the card for the list view. */
+export function ContactRow({ contact, geographyLabel }: { contact: LeadershipContact; geographyLabel: string }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="flex min-w-60 flex-1 items-center gap-3">
+        <Avatar className="size-10">
+          <AvatarFallback className="bg-accent font-semibold text-primary">{initialsFor(contact.name)}</AvatarFallback>
+        </Avatar>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-foreground">{contact.name}</p>
+          <p className="truncate text-xs text-muted-foreground">{contact.title}</p>
+        </div>
+      </div>
+      <p className="hidden min-w-40 items-center gap-1.5 text-xs text-muted-foreground lg:flex">
+        <MapPin size={13} /> {geographyLabel}
+      </p>
+      <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-primary">
+        {LEVEL_LABEL[contact.administrativeLevel]}
+      </span>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => toast.success("Email drafted (simulated)", { description: `A message to ${contact.name} would open here in a connected environment.` })}>
+          <Envelope size={14} />
+          Email
+        </Button>
+        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => toast.success("Call initiated (simulated)", { description: `A call to ${contact.name} would start here in a connected environment.` })}>
+          <Phone size={14} />
+          Call
+        </Button>
+      </div>
+    </div>
+  );
+}
