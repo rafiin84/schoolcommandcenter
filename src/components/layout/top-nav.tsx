@@ -14,7 +14,7 @@ export function TopNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background">
+    <header className="sticky top-0 z-30 border-b border-border bg-card">
       <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-12">
         <Link href="/overview" className="flex flex-col items-start leading-none" aria-label="Zoho Classes — School Command Center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
