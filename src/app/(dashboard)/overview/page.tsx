@@ -73,6 +73,7 @@ export default function OverviewPage() {
           <ErrorState onRetry={() => overview.refetch()} />
         ) : snapshot ? (
           <KpiGrid
+            title="statewide statistics"
             cards={[
               {
                 label: "Schools onboarded",
