@@ -29,7 +29,7 @@ export function ProgressBar({
           "[&_[data-slot=progress-track]]:h-2",
           tone === "critical"
             ? "[&_[data-slot=progress-indicator]]:bg-status-critical"
-            : "[&_[data-slot=progress-indicator]]:bg-brand-accent",
+            : "[&_[data-slot=progress-indicator]]:bg-primary",
         )}
       />
     </div>
