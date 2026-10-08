@@ -8,7 +8,6 @@ import {
   ChartLineUp,
   CheckCircle,
   GraduationCap,
-  MapTrifold,
   UsersThree,
   Warning,
 } from "@phosphor-icons/react/dist/ssr";
@@ -20,7 +19,6 @@ import { TrendChart } from "@/components/dashboard/trend-chart";
 import { DistrictHealthGrid } from "@/components/dashboard/district-health-grid";
 import { ErrorState } from "@/components/shared/error-state";
 import { KpiGridSkeleton, ChartSkeleton, ListSkeleton } from "@/components/shared/skeletons";
-import { Button } from "@/components/ui/button";
 import { useOverviewMetrics, useKpiTrend } from "@/hooks/use-overview";
 import { useDistrictSummaries } from "@/hooks/use-map";
 import { ReportCharts } from "@/components/reports/report-charts-section";
@@ -54,10 +52,6 @@ export default function OverviewPage() {
             </h1>
           </div>
         </div>
-        <Button render={<Link href="/education-map" />} nativeButton={false} className="gap-2">
-          <MapTrifold size={16} />
-          Open Education Map
-        </Button>
       </div>
 
       <section aria-labelledby="kpi-heading" className="mb-8">
