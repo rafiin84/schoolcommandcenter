@@ -367,9 +367,8 @@ export function AnnouncementComposer() {
               {posted && <span className="text-xs font-medium text-status-good">Posted below.</span>}
               <Button
                 type="submit"
-                variant="secondary"
                 disabled={isSubmitting || !body.trim()}
-                className="h-11 rounded-full bg-muted px-7 text-base font-medium text-foreground hover:bg-muted/70"
+                className="h-11 rounded-full bg-muted px-7 text-base font-medium text-foreground enabled:bg-primary enabled:text-primary-foreground enabled:hover:bg-primary/90 disabled:opacity-100"
               >
                 Next
               </Button>
