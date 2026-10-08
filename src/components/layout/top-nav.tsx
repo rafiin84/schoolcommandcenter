@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { GearSix } from "@phosphor-icons/react/dist/ssr";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
@@ -50,6 +52,16 @@ export function TopNav() {
         <div className="flex items-center gap-1.5">
           <ThemeToggle />
           <NotificationBell />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-10 rounded-full"
+            aria-label="Settings"
+            render={<Link href="/settings" />}
+            nativeButton={false}
+          >
+            <GearSix size={19} />
+          </Button>
           <Avatar className="ml-1 size-9" aria-label="Signed in as State Education Reviewer">
             <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
               SR
