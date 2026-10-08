@@ -26,7 +26,7 @@ export function TopNav() {
         </Link>
         <nav
           aria-label="Primary"
-          className="hidden items-center ml-2 h-full flex-1 justify-start gap-1 overflow-x-auto md:flex"
+          className="hidden items-center h-full flex-1 justify-center gap-1 overflow-x-auto md:flex"
         >
           {TOP_NAV_ITEMS.map((item) => {
             const isActive = pathname.startsWith(item.href);
