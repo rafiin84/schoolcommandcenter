@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -16,7 +16,7 @@ import {
 import { ContentContainer } from "@/components/layout/content-container";
 import { SectionHeader } from "@/components/layout/section-header";
 import { KpiGrid } from "@/components/dashboard/kpi-grid";
-import { ModuleUsageGrid } from "@/components/dashboard/module-usage-grid";
+import { ModuleUsageGrid, MODULE_USAGE_PERIODS, type ModuleUsagePeriod } from "@/components/dashboard/module-usage-grid";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { DistrictHealthGrid } from "@/components/dashboard/district-health-grid";
 import { ErrorState } from "@/components/shared/error-state";
@@ -37,6 +37,7 @@ export default function OverviewPage() {
   const reportData = reports.data?.data;
   const reportMetrics = useMemo(() => (reportData ? buildReportMetrics(reportData) : null), [reportData]);
   const moduleUsage = useModuleUsage();
+  const [usagePeriod, setUsagePeriod] = useState<ModuleUsagePeriod>("month");
 
   const snapshot = overview.data?.data.stateSnapshot;
 
@@ -139,13 +140,27 @@ export default function OverviewPage() {
         <SectionHeader
           title="Zoho Classes module activity"
           description="Statewide usage across Zoho Classes content modules."
+          actions={
+            <select
+              value={usagePeriod}
+              onChange={(e) => setUsagePeriod(e.target.value as ModuleUsagePeriod)}
+              aria-label="Module activity period"
+              className="h-8 rounded-lg border border-border bg-card px-2.5 text-sm text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              {MODULE_USAGE_PERIODS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          }
         />
         {moduleUsage.isLoading ? (
           <KpiGridSkeleton count={8} />
         ) : moduleUsage.isError ? (
           <ErrorState onRetry={() => moduleUsage.refetch()} />
         ) : moduleUsage.data ? (
-          <ModuleUsageGrid stats={moduleUsage.data.data} />
+          <ModuleUsageGrid stats={moduleUsage.data.data} period={usagePeriod} />
         ) : null}
       </section>
 
@@ -166,7 +181,7 @@ export default function OverviewPage() {
       <div className="mb-8">
         <section aria-labelledby="map-preview-heading" className="rounded-lg border border-border bg-card p-4 sm:p-6">
           <SectionHeader
-            title="Living Tamil Nadu education map"
+            title="Map"
             description="District operational health at a glance."
             actions={
               <Link href="/education-map" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
