@@ -2,12 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { ContentContainer } from "@/components/layout/content-container";
-import { DirectoryAccountCard, DirectoryAccountRow } from "@/components/zoho/directory-account-card";
+import { DirectoryAccountRow } from "@/components/zoho/directory-account-card";
 import { AddZohoAccountDialog } from "@/components/zoho/add-zoho-account-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SortMenu, SortNameIcon, SortTimeIcon } from "@/components/shared/sort-menu";
 import { SearchInput } from "@/components/shared/search-input";
-import { ViewToggle, type ViewMode } from "@/components/shared/view-toggle";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ListSkeleton } from "@/components/shared/skeletons";
@@ -20,7 +19,6 @@ export default function ZohoAccessPage() {
   const [districtId, setDistrictId] = useState(ALL);
   const [blockId, setBlockId] = useState(ALL);
   const [search, setSearch] = useState("");
-  const [view, setView] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<"name" | "verified">("name");
 
   const accounts = useDirectorySchoolAccounts();
@@ -122,7 +120,6 @@ export default function ZohoAccessPage() {
             ariaLabel="Search accounts"
             className="w-64"
           />
-          <ViewToggle value={view} onChange={setView} />
           <SortMenu
             value={sortBy}
             onChange={setSortBy}
@@ -149,14 +146,10 @@ export default function ZohoAccessPage() {
           description="Try a different search or clear the District/Block filter."
         />
       ) : (
-        <div className={view === "grid" ? "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" : "flex flex-col gap-2"}>
-          {filtered.map((account) =>
-            view === "grid" ? (
-              <DirectoryAccountCard key={account.id} account={account} number={accountNumbers.get(account.id) ?? 0} />
-            ) : (
-              <DirectoryAccountRow key={account.id} account={account} number={accountNumbers.get(account.id) ?? 0} />
-            ),
-          )}
+        <div className="flex flex-col gap-2">
+          {filtered.map((account) => (
+            <DirectoryAccountRow key={account.id} account={account} number={accountNumbers.get(account.id) ?? 0} />
+          ))}
         </div>
       )}
     </ContentContainer>
