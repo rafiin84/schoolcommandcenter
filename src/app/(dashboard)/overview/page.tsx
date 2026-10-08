@@ -18,13 +18,11 @@ import { KpiGrid } from "@/components/dashboard/kpi-grid";
 import { ModuleUsageGrid } from "@/components/dashboard/module-usage-grid";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { DistrictHealthGrid } from "@/components/dashboard/district-health-grid";
-import { NotificationPreviewList } from "@/components/notifications/notification-preview-list";
 import { ErrorState } from "@/components/shared/error-state";
 import { KpiGridSkeleton, ChartSkeleton, ListSkeleton } from "@/components/shared/skeletons";
 import { Button } from "@/components/ui/button";
 import { useOverviewMetrics, useKpiTrend } from "@/hooks/use-overview";
 import { useDistrictSummaries } from "@/hooks/use-map";
-import { useNotifications } from "@/hooks/use-notifications";
 import { ReportCharts } from "@/components/reports/report-charts-section";
 import { buildReportMetrics } from "@/components/reports/report-metrics";
 import { useReports } from "@/hooks/use-reports";
@@ -38,7 +36,6 @@ export default function OverviewPage() {
   const reports = useReports();
   const reportData = reports.data?.data;
   const reportMetrics = useMemo(() => (reportData ? buildReportMetrics(reportData) : null), [reportData]);
-  const notifications = useNotifications();
   const moduleUsage = useModuleUsage();
 
   const snapshot = overview.data?.data.stateSnapshot;
@@ -167,8 +164,8 @@ export default function OverviewPage() {
         ) : null}
       </section>
 
-      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <section aria-labelledby="map-preview-heading" className="lg:col-span-3 rounded-lg border border-border bg-card p-4 sm:p-6">
+      <div className="mb-8">
+        <section aria-labelledby="map-preview-heading" className="rounded-lg border border-border bg-card p-4 sm:p-6">
           <SectionHeader
             title="Living Tamil Nadu education map"
             description="District operational health at a glance."
@@ -187,22 +184,6 @@ export default function OverviewPage() {
           ) : null}
         </section>
 
-        <section aria-labelledby="notifications-preview-heading" className="lg:col-span-2 rounded-lg border border-border bg-card">
-          <div className="p-4 pb-0 sm:p-6 sm:pb-0">
-            <SectionHeader
-              title="Notifications"
-              actions={
-                <Link href="/notifications" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-                  View all <ArrowRight size={14} />
-                </Link>
-              }
-            />
-          </div>
-          <NotificationPreviewList
-            notifications={notifications.data?.data.slice(0, 5) ?? []}
-            isLoading={notifications.isLoading}
-          />
-        </section>
       </div>
 
       {reports.isLoading ? (
