@@ -34,9 +34,11 @@ export interface KpiCardProps {
   icon?: React.ComponentType<IconProps>;
   href?: string;
   tone?: KpiTone;
+  /** Banner variant only: photo shown on the right, fading into the card. Falls back to the icon. */
+  image?: string;
 }
 
-export function KpiCard({ label, value, helpText, trend, icon: Icon, href, tone, variant = "tile" }: KpiCardProps & { variant?: "tile" | "banner" }) {
+export function KpiCard({ label, value, helpText, trend, icon: Icon, href, tone, image, variant = "tile" }: KpiCardProps & { variant?: "tile" | "banner" }) {
   const TrendIcon = trend ? TREND_ICON[trend.direction] : null;
   void tone;
   const toneStyle = TILE;
@@ -50,7 +52,15 @@ export function KpiCard({ label, value, helpText, trend, icon: Icon, href, tone,
         href && "cursor-pointer hover:shadow-lg",
       )}
     >
-      {Icon && (
+      {image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={image}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-3/5 object-cover [mask-image:linear-gradient(to_right,transparent,black_55%)]"
+        />
+      ) : Icon && (
         <Icon
           size={132}
           weight="fill"
