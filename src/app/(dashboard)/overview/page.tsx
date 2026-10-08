@@ -46,7 +46,7 @@ export default function OverviewPage() {
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <span className="flex size-14 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
-            Z
+            SR
           </span>
           <div>
             <p className="text-lg text-foreground">Hi, State Reviewer</p>
