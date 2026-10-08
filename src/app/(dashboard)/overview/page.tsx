@@ -7,7 +7,9 @@ import {
   Buildings,
   ChartLineUp,
   CheckCircle,
+  Gauge,
   GraduationCap,
+  MapPin,
   UsersThree,
   Warning,
 } from "@phosphor-icons/react/dist/ssr";
@@ -65,6 +67,7 @@ export default function OverviewPage() {
         ) : snapshot ? (
           <KpiGrid
             title="statewide statistics"
+            variant="banner"
             cards={[
               {
                 label: "Schools onboarded",
@@ -109,6 +112,7 @@ export default function OverviewPage() {
                 label: "Readiness rate",
                 value: formatPercent(snapshot.readinessRate),
                 helpText: "Share of schools fully onboarded",
+                icon: Gauge,
                 tone: "amber",
               },
               {
@@ -123,6 +127,7 @@ export default function OverviewPage() {
                 label: "District coverage",
                 value: `${overview.data!.data.districtsOnTrack} / ${overview.data!.data.totalDistricts}`,
                 helpText: "Districts on track vs. statewide target",
+                icon: MapPin,
                 tone: "orange",
               },
             ]}

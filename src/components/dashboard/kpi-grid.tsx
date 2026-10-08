@@ -18,7 +18,7 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-export function KpiGrid({ cards, title }: { cards: KpiCardProps[]; title?: string }) {
+export function KpiGrid({ cards, title, variant = "tile" }: { cards: KpiCardProps[]; title?: string; variant?: "tile" | "banner" }) {
   const scroller = useRef<HTMLDivElement>(null);
   const [edges, setEdges] = useState({ start: true, end: true });
 
@@ -87,8 +87,8 @@ export function KpiGrid({ cards, title }: { cards: KpiCardProps[]; title?: strin
         className="flex gap-3 overflow-x-auto pb-1 sm:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {cards.map((card) => (
-          <motion.div key={card.label} variants={item} className="w-56 shrink-0 sm:w-64">
-            <KpiCard {...card} />
+          <motion.div key={card.label} variants={item} className={variant === "banner" ? "w-[300px] shrink-0 sm:w-[400px]" : "w-56 shrink-0 sm:w-64"}>
+            <KpiCard {...card} variant={variant} />
           </motion.div>
         ))}
       </motion.div>
