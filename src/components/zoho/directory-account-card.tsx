@@ -148,11 +148,11 @@ export function DirectoryAccountRow({ account, number }: { account: DirectorySch
         <StatusIcon size={14} weight="fill" />
         {status.label}
       </span>
+      <ContactButtons account={account} />
       <Button size="sm" variant="secondary" className="gap-2" onClick={() => setConfirmOpen(true)}>
         Open Zoho Classes
         <ArrowSquareOut size={14} />
       </Button>
-      <ContactButtons account={account} />
       <DirectoryAccessConfirmation open={confirmOpen} onOpenChange={setConfirmOpen} account={account} />
     </div>
   );
