@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -17,18 +18,16 @@ import { KpiGrid } from "@/components/dashboard/kpi-grid";
 import { ModuleUsageGrid } from "@/components/dashboard/module-usage-grid";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { DistrictHealthGrid } from "@/components/dashboard/district-health-grid";
-import { AlertCard } from "@/components/alerts/alert-card";
-import { AiInsightCard } from "@/components/ai/ai-insight-card";
 import { NotificationPreviewList } from "@/components/notifications/notification-preview-list";
-import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { KpiGridSkeleton, ChartSkeleton, ListSkeleton } from "@/components/shared/skeletons";
 import { Button } from "@/components/ui/button";
 import { useOverviewMetrics, useKpiTrend } from "@/hooks/use-overview";
 import { useDistrictSummaries } from "@/hooks/use-map";
-import { useAlerts } from "@/hooks/use-alerts";
-import { useAiInsights } from "@/hooks/use-ai-insights";
 import { useNotifications } from "@/hooks/use-notifications";
+import { ReportCharts } from "@/components/reports/report-charts-section";
+import { buildReportMetrics } from "@/components/reports/report-metrics";
+import { useReports } from "@/hooks/use-reports";
 import { useModuleUsage } from "@/hooks/use-module-usage";
 import { formatCompactNumber, formatPercent } from "@/lib/formatters";
 
@@ -36,8 +35,9 @@ export default function OverviewPage() {
   const overview = useOverviewMetrics();
   const trend = useKpiTrend({ scopeType: "state", scopeId: "tamil-nadu" });
   const districts = useDistrictSummaries();
-  const alerts = useAlerts({ sortBy: "priority", status: ["open"] });
-  const insights = useAiInsights();
+  const reports = useReports();
+  const reportData = reports.data?.data;
+  const reportMetrics = useMemo(() => (reportData ? buildReportMetrics(reportData) : null), [reportData]);
   const notifications = useNotifications();
   const moduleUsage = useModuleUsage();
 
@@ -205,57 +205,13 @@ export default function OverviewPage() {
         </section>
       </div>
 
-      <section aria-labelledby="alerts-preview-heading" className="mb-8">
-        <SectionHeader
-          title="Alerts & exceptions"
-          description="Highest-priority open items across the state."
-          actions={
-            <Link href="/alerts" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              View all <ArrowRight size={14} />
-            </Link>
-          }
-        />
-        {alerts.isLoading ? (
-          <ListSkeleton count={3} />
-        ) : alerts.isError ? (
-          <ErrorState onRetry={() => alerts.refetch()} />
-        ) : alerts.data && alerts.data.data.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            {alerts.data.data.slice(0, 3).map((alert) => (
-              <AlertCard key={alert.id} alert={alert} compact />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            icon={CheckCircle}
-            title="No open alerts"
-            description="There are currently no open alerts requiring attention statewide."
-          />
-        )}
-      </section>
-
-      <section aria-labelledby="ai-preview-heading" className="mb-4">
-        <SectionHeader
-          title="AI insights"
-          description="Illustrative AI analysis generated from this mock dataset — inspect before acting."
-        />
-        {insights.isLoading ? (
-          <ListSkeleton count={2} />
-        ) : insights.isError ? (
-          <ErrorState onRetry={() => insights.refetch()} />
-        ) : insights.data && insights.data.data.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-            {insights.data.data.slice(0, 2).map((insight) => (
-              <AiInsightCard key={insight.id} insight={insight} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            title="No insights available"
-            description="AI insights will appear here once patterns are detected in the mock dataset."
-          />
-        )}
-      </section>
+      {reports.isLoading ? (
+        <ChartSkeleton />
+      ) : reports.isError ? (
+        <ErrorState onRetry={() => reports.refetch()} />
+      ) : reportData && reportMetrics ? (
+        <ReportCharts data={reportData} metrics={reportMetrics} />
+      ) : null}
     </ContentContainer>
   );
 }
