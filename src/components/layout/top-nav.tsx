@@ -6,7 +6,6 @@ import { GearSix } from "@phosphor-icons/react/dist/ssr";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NotificationBell } from "@/components/notifications/notification-bell";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { PRIMARY_NAV_ITEMS } from "@/components/navigation/nav-items";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +49,6 @@ export function TopNav() {
           })}
         </nav>
         <div className="flex items-center gap-1.5">
-          <ThemeToggle />
           <NotificationBell />
           <Button
             variant="ghost"
