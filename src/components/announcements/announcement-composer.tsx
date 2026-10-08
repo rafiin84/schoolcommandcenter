@@ -7,12 +7,13 @@ import { z } from "zod";
 import {
   FileText,
   Image as ImageIcon,
-  PaperPlaneTilt,
-  Plus,
+  MapPin,
+  Palette,
+  Paperclip,
   Sparkle,
   VideoCamera,
   X,
-  YoutubeLogo,
+  XCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import type { Announcement, AnnouncementAttachment, AnnouncementCategory } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -44,8 +45,16 @@ const AI_DRAFTS: Record<AnnouncementCategory, (title: string) => string> = {
     `Introducing ${title || "a new update"} — a quick heads-up for everyone in the network so you know what's changed and where to look for it.`,
 };
 
+const CATEGORY_LABEL: Record<AnnouncementCategory, string> = {
+  milestone: "Milestone",
+  update: "Update",
+  insight: "Insight",
+  guidance: "Guidance",
+  introduction: "Introduction",
+};
+
 const composerSchema = z.object({
-  title: z.string().trim().min(3, "Title is too short").max(120, "Keep the title under 120 characters"),
+  title: z.string().trim().max(120, "Keep the title under 120 characters"),
   body: z.string().trim().min(10, "Write a bit more detail").max(2000),
   category: z.enum(["milestone", "update", "insight", "guidance", "introduction"]),
   audience: z.string(),
@@ -58,6 +67,11 @@ const composerSchema = z.object({
 
 type ComposerValues = z.infer<typeof composerSchema>;
 
+function deriveTitle(body: string): string {
+  const firstLine = body.trim().split(/\n|(?<=[.!?])\s/)[0];
+  return firstLine.length > 80 ? `${firstLine.slice(0, 77)}…` : firstLine;
+}
+
 function fileKind(file: File): AnnouncementAttachment["kind"] {
   if (file.type.startsWith("image/")) return "image";
   if (file.type.startsWith("video/")) return "video";
@@ -68,7 +82,7 @@ let localAttachmentCounter = 0;
 
 export function AnnouncementComposer() {
   const [expanded, setExpanded] = useState(false);
-  const [showYoutubeField, setShowYoutubeField] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [localFiles, setLocalFiles] = useState<{ file: File; attachment: AnnouncementAttachment }[]>([]);
   const [posted, setPosted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,10 +105,15 @@ export function AnnouncementComposer() {
   const category = watch("category");
   const title = watch("title");
   const body = watch("body");
+  const audience = watch("audience");
+  const audienceLabel =
+    audience === STATEWIDE
+      ? "Statewide"
+      : `${districts.data?.data.find((d) => d.id === audience)?.name ?? "District"} district`;
 
   function collapse() {
     setExpanded(false);
-    setShowYoutubeField(false);
+    setShowAdvanced(false);
     reset({ title: "", body: "", category: "update", audience: STATEWIDE, youtubeUrl: "" });
     localFiles.forEach((f) => URL.revokeObjectURL(f.attachment.url));
     setLocalFiles([]);
@@ -149,7 +168,7 @@ export function AnnouncementComposer() {
       authorInitials: CURRENT_USER.initials,
       createdAt: new Date().toISOString(),
       category: values.category,
-      title: values.title,
+      title: values.title || deriveTitle(values.body),
       body: values.body,
       audienceLabel: selectedDistrict ? `${selectedDistrict.name} district` : "Statewide",
       districtId: selectedDistrict?.id ?? null,
@@ -195,141 +214,171 @@ export function AnnouncementComposer() {
           </span>
         </button>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="flex items-start gap-3">
-            <Avatar>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+          <div className="flex items-start gap-4">
+            <Avatar className="size-11 shrink-0">
               <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
                 {CURRENT_USER.initials}
               </AvatarFallback>
             </Avatar>
-            <div>
-              <p className="text-sm font-semibold text-foreground">{CURRENT_USER.name}</p>
-              <p className="text-xs text-muted-foreground">{CURRENT_USER.role}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Input
-              placeholder="Give this announcement a title…"
-              className="flex-1 border-none bg-transparent px-0 text-sm font-medium shadow-none focus-visible:ring-0"
-              {...register("title")}
-            />
-            <select
-              {...register("audience")}
-              disabled={districts.isLoading}
-              aria-label="Audience"
-              className="h-8 w-full shrink-0 rounded-lg border border-input bg-transparent px-2.5 text-xs text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 sm:w-40"
-            >
-              <option value={STATEWIDE}>Statewide</option>
-              {(districts.data?.data ?? []).map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} district
-                </option>
-              ))}
-            </select>
-          </div>
-          {errors.title && <p className="-mt-2 text-xs text-destructive">{errors.title.message}</p>}
-
-          <Textarea
-            placeholder="What do you want to share with schools and districts?"
-            rows={4}
-            className="resize-none border-none bg-transparent px-0 shadow-none focus-visible:ring-0"
-            {...register("body")}
-          />
-          {errors.body && <p className="-mt-2 text-xs text-destructive">{errors.body.message}</p>}
-
-          {showYoutubeField && (
-            <div>
-              <Input
-                placeholder="https://youtube.com/watch?v=…"
-                {...register("youtubeUrl")}
-                autoFocus
-              />
-              {errors.youtubeUrl && <p className="mt-1 text-xs text-destructive">{errors.youtubeUrl.message}</p>}
-            </div>
-          )}
-
-          {localFiles.length > 0 && (
-            <ul className="flex flex-wrap gap-2">
-              {localFiles.map(({ attachment }) => {
-                const Icon = attachment.kind === "image" ? ImageIcon : attachment.kind === "video" ? VideoCamera : FileText;
-                return (
-                  <li
-                    key={attachment.id}
-                    className="flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground"
-                  >
-                    <Icon size={13} />
-                    <span className="max-w-40 truncate">{attachment.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeLocalFile(attachment.id)}
-                      aria-label={`Remove ${attachment.name}`}
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      <X size={12} />
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-
-          <p className="rounded-lg bg-muted px-3 py-2 text-xs leading-relaxed text-muted-foreground">
-            Posted for this session only — attachments and AI drafts stay in your browser and nothing is
-            uploaded to a server. Refreshing the page clears them.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
-            <div className="flex items-center gap-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <button
-                      type="button"
-                      className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
-                    >
-                      <Plus size={16} />
-                      Add to your post
-                    </button>
-                  }
+            <div className="min-w-0 flex-1">
+              {showAdvanced && (
+                <Input
+                  placeholder="Title (optional)"
+                  aria-label="Announcement title"
+                  className="mb-1 h-9 border-none bg-transparent px-0 text-base font-semibold shadow-none focus-visible:ring-0"
+                  {...register("title")}
                 />
-                <DropdownMenuContent align="start">
-                  <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="gap-2">
-                    <ImageIcon size={15} />
-                    Photo or document
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowYoutubeField(true)} className="gap-2">
-                    <YoutubeLogo size={15} />
-                    YouTube link
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <button
-                type="button"
-                onClick={generateWithAi}
-                className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
-              >
-                <Sparkle size={14} weight="fill" />
-                Generate with AI
-              </button>
+              )}
+              <Textarea
+                autoFocus
+                placeholder="Create an Announcement"
+                aria-label="Announcement text"
+                rows={4}
+                className="min-h-24 resize-none border-none bg-transparent px-0 text-lg shadow-none placeholder:text-muted-foreground/70 focus-visible:ring-0"
+                {...register("body")}
+              />
+              {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+              {errors.body && <p className="text-xs text-destructive">{errors.body.message}</p>}
+              {showAdvanced && (
+                <div className="mt-2">
+                  <Input
+                    placeholder="YouTube link (optional) — https://youtube.com/watch?v=…"
+                    aria-label="YouTube link"
+                    {...register("youtubeUrl")}
+                  />
+                  {errors.youtubeUrl && <p className="mt-1 text-xs text-destructive">{errors.youtubeUrl.message}</p>}
+                </div>
+              )}
+              {localFiles.length > 0 && (
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {localFiles.map(({ attachment }) => {
+                    const Icon = attachment.kind === "image" ? ImageIcon : attachment.kind === "video" ? VideoCamera : FileText;
+                    return (
+                      <li
+                        key={attachment.id}
+                        className="flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground"
+                      >
+                        <Icon size={13} />
+                        <span className="max-w-40 truncate">{attachment.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeLocalFile(attachment.id)}
+                          aria-label={`Remove ${attachment.name}`}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          <X size={12} />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
+            <button
+              type="button"
+              onClick={collapse}
+              aria-label="Close"
+              className="shrink-0 text-foreground/80 hover:text-foreground"
+            >
+              <XCircle size={30} />
+            </button>
+          </div>
 
-            <div className="flex items-center gap-3">
-              {posted && <span className="text-xs font-medium text-status-good">Posted below.</span>}
-              <button
-                type="button"
-                onClick={collapse}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              aria-label="Attach photo or document"
+              title="Attach photo or document"
+              className="text-foreground/80 hover:text-primary"
+            >
+              <Paperclip size={26} />
+            </button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <button
+                    type="button"
+                    aria-label="Category"
+                    title={`Category: ${CATEGORY_LABEL[category]}`}
+                    className="text-foreground/80 hover:text-primary"
+                  />
+                }
               >
-                Cancel
-              </button>
-              <Button type="submit" disabled={isSubmitting || !body.trim()} className="gap-2">
-                <PaperPlaneTilt size={15} />
-                Post
+                <Palette size={26} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {(Object.keys(CATEGORY_LABEL) as AnnouncementCategory[]).map((c) => (
+                  <DropdownMenuItem key={c} onClick={() => setValue("category", c)}>
+                    {CATEGORY_LABEL[c]}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <button
+                    type="button"
+                    aria-label="Audience"
+                    title={`Audience: ${audienceLabel}`}
+                    className="text-foreground/80 hover:text-primary"
+                  />
+                }
+              >
+                <MapPin size={26} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="max-h-72 overflow-y-auto">
+                <DropdownMenuItem onClick={() => setValue("audience", STATEWIDE)}>Statewide</DropdownMenuItem>
+                {(districts.data?.data ?? []).map((d) => (
+                  <DropdownMenuItem key={d.id} onClick={() => setValue("audience", d.id)}>
+                    {d.name} district
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <span className="size-3 rounded-full bg-muted-foreground/20" aria-hidden />
+
+            <button
+              type="button"
+              onClick={() => setShowAdvanced((v) => !v)}
+              aria-pressed={showAdvanced}
+              className="rounded-full border border-primary bg-primary/5 px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+            >
+              Advanced Editor
+            </button>
+            <button
+              type="button"
+              onClick={generateWithAi}
+              className="flex items-center gap-2 rounded-full border border-primary bg-primary/5 px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+            >
+              <Sparkle size={18} weight="fill" />
+              Create With AI
+            </button>
+
+            <div className="ml-auto flex items-center gap-3">
+              <span className="hidden text-xs text-muted-foreground sm:inline">
+                {CATEGORY_LABEL[category]} · {audienceLabel}
+              </span>
+              {posted && <span className="text-xs font-medium text-status-good">Posted below.</span>}
+              <Button
+                type="submit"
+                variant="secondary"
+                disabled={isSubmitting || !body.trim()}
+                className="h-11 rounded-full bg-muted px-7 text-base font-medium text-foreground hover:bg-muted/70"
+              >
+                Next
               </Button>
             </div>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Posted for this session only — attachments and AI drafts stay in your browser and nothing is uploaded to a
+            server.
+          </p>
         </form>
       )}
     </div>
