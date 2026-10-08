@@ -72,7 +72,6 @@ export default function OverviewPage() {
             cards={[
               {
                 label: "Schools onboarded",
-                image: "/stat-cards/schools.jpg",
                 value: `${formatCompactNumber(snapshot.schoolsOnboarded)} / ${formatCompactNumber(snapshot.totalSchools)}`,
                 helpText: `${formatPercent(snapshot.readinessRate)} of statewide target reached`,
                 trend: { direction: snapshot.trendDirection, label: `${snapshot.targetVariance >= 0 ? "+" : ""}${snapshot.targetVariance} pts vs target` },
@@ -98,7 +97,6 @@ export default function OverviewPage() {
               },
               {
                 label: "Active accounts",
-                image: "/stat-cards/active.jpg",
                 value: formatCompactNumber(snapshot.activeAccounts),
                 helpText: "Illustrative weekly active usage",
                 icon: CheckCircle,
@@ -106,7 +104,6 @@ export default function OverviewPage() {
               },
               {
                 label: "Engagement rate",
-                image: "/stat-cards/engagement.jpg",
                 value: formatPercent(snapshot.engagementRate),
                 helpText: "Average across onboarded schools",
                 icon: ChartLineUp,
@@ -114,7 +111,6 @@ export default function OverviewPage() {
               },
               {
                 label: "Readiness rate",
-                image: "/stat-cards/readiness.jpg",
                 value: formatPercent(snapshot.readinessRate),
                 helpText: "Share of schools fully onboarded",
                 icon: Gauge,
