@@ -27,6 +27,13 @@ export default function ZohoAccessPage() {
   const draftAccounts = useZohoDirectoryStore((s) => s.draftAccounts);
   const allAccounts = useMemo(() => [...draftAccounts, ...(accounts.data ?? [])], [draftAccounts, accounts.data]);
 
+  // Stable numbering: imported accounts first, then manually added ones.
+  const accountNumbers = useMemo(() => {
+    const map = new Map<string, number>();
+    [...(accounts.data ?? []), ...draftAccounts].forEach((a, i) => map.set(a.id, i + 1));
+    return map;
+  }, [accounts.data, draftAccounts]);
+
   const districts = useMemo(() => {
     const seen = new Map<string, string>();
     for (const a of allAccounts) seen.set(a.districtId, a.districtName);
@@ -145,9 +152,9 @@ export default function ZohoAccessPage() {
         <div className={view === "grid" ? "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" : "flex flex-col gap-2"}>
           {filtered.map((account) =>
             view === "grid" ? (
-              <DirectoryAccountCard key={account.id} account={account} />
+              <DirectoryAccountCard key={account.id} account={account} number={accountNumbers.get(account.id) ?? 0} />
             ) : (
-              <DirectoryAccountRow key={account.id} account={account} />
+              <DirectoryAccountRow key={account.id} account={account} number={accountNumbers.get(account.id) ?? 0} />
             ),
           )}
         </div>
