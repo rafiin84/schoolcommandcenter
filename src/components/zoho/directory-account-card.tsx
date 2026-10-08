@@ -30,11 +30,11 @@ function ContactButtons({ account }: { account: DirectorySchoolAccount }) {
   const phone = mockPhone(account.id);
   return (
     <>
-      <Button size="sm" variant="secondary" aria-label="Call" title={phone} render={<a href={`tel:${phone.replace(/\s/g, "")}`} />} nativeButton={false} className="gap-2 bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground">
+      <Button size="sm" variant="secondary" aria-label="Call" title={phone} render={<a href={`tel:${phone.replace(/\s/g, "")}`} />} nativeButton={false} className="gap-2 border border-border bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground">
         <Phone size={14} />
         Call
       </Button>
-      <Button size="sm" variant="secondary" aria-label="Email" title={account.loginEmail} render={<a href={`mailto:${account.loginEmail}`} />} nativeButton={false} className="gap-2 bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground">
+      <Button size="sm" variant="secondary" aria-label="Email" title={account.loginEmail} render={<a href={`mailto:${account.loginEmail}`} />} nativeButton={false} className="gap-2 border border-border bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground">
         <EnvelopeSimple size={14} />
         Email
       </Button>
