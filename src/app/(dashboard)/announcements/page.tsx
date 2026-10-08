@@ -75,7 +75,7 @@ export default function AnnouncementsPage() {
   return (
     <ContentContainer className="pt-3">
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)_300px]">
-        <div className="sticky top-32 hidden max-h-[calc(100svh-9rem)] overflow-y-auto lg:block">
+        <div className="sticky top-20 hidden max-h-[calc(100svh-6rem)] overflow-y-auto lg:block">
           <AnnouncementProfileCard announcements={feed} />
         </div>
 
@@ -152,7 +152,7 @@ export default function AnnouncementsPage() {
           )}
         </div>
 
-        <div className="sticky top-32 hidden max-h-[calc(100svh-9rem)] overflow-y-auto lg:block">
+        <div className="sticky top-20 hidden max-h-[calc(100svh-6rem)] overflow-y-auto lg:block">
           <AnnouncementStatsCard announcements={feed} />
         </div>
       </div>
