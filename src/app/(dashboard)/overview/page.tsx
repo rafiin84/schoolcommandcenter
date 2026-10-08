@@ -166,7 +166,7 @@ export default function OverviewPage() {
 
       <section aria-labelledby="trend-heading" className="mb-8 rounded-lg border border-border bg-card p-4 sm:p-6">
         <SectionHeader
-          title="Statewide trend"
+          title="Trend"
           description="Weekly rollup across the last reporting cycles. Toggle a series or switch the time range."
         />
         {trend.isLoading ? (
