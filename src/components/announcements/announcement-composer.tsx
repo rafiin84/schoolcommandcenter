@@ -370,7 +370,7 @@ export function AnnouncementComposer() {
                 disabled={isSubmitting || !body.trim()}
                 className="h-11 rounded-full bg-muted px-7 text-base font-medium text-foreground enabled:bg-primary enabled:text-primary-foreground enabled:hover:bg-primary/90 disabled:opacity-100"
               >
-                Next
+                Submit
               </Button>
             </div>
           </div>
